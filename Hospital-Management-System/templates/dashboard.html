@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4 p-lg-5">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">{{ page_title }}</h2>
+                <p class="text-muted mb-0">{{ page_description }}</p>
+            </div>
+            <div class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
+                {{ user.role }}
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="p-4 rounded-4 bg-light border">
+                    <h5 class="fw-semibold">Welcome, {{ user.full_name or user.username }}</h5>
+                    <p class="text-muted mb-3">You have access to the following workspace areas:</p>
+                    <ul class="list-group list-group-flush">
+                        {% for item in allowed_pages %}
+                            {% if item|length == 3 %}
+                                {% set route = item[0] %}
+                                {% set params = item[1] %}
+                                {% set label = item[2] %}
+                                <li class="list-group-item px-0">
+                                    <a href="{{ url_for(route, **params) }}" class="text-decoration-none fw-medium">{{ label }}</a>
+                                </li>
+                            {% else %}
+                                {% set route = item[0] %}
+                                {% set label = item[1] %}
+                                <li class="list-group-item px-0">
+                                    <a href="{{ url_for(route) }}" class="text-decoration-none fw-medium">{{ label }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="p-4 rounded-4 bg-primary text-white h-100">
+                    <h5 class="fw-semibold">Secure access</h5>
+                    <p class="mb-0">Your session is protected with Flask-Login and hashed credentials.</p>
+                </div>
+            </div>
+        </div>
+
+        {% if appointment_summary %}
+        <div class="row g-3 mt-2">
+            <div class="col-md-2">
+                <div class="border rounded-4 p-3 h-100 bg-white">
+                    <div class="text-muted small">Today</div>
+                    <div class="display-6 fw-bold">{{ appointment_summary.today }}</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border rounded-4 p-3 h-100 bg-white">
+                    <div class="text-muted small">Pending</div>
+                    <div class="display-6 fw-bold">{{ appointment_summary.pending }}</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border rounded-4 p-3 h-100 bg-white">
+                    <div class="text-muted small">Completed</div>
+                    <div class="display-6 fw-bold">{{ appointment_summary.completed }}</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border rounded-4 p-3 h-100 bg-white">
+                    <div class="text-muted small">Cancelled</div>
+                    <div class="display-6 fw-bold">{{ appointment_summary.cancelled }}</div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border rounded-4 p-3 h-100 bg-white">
+                    <div class="text-muted small">Upcoming</div>
+                    <div class="display-6 fw-bold">{{ appointment_summary.upcoming }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h5 class="fw-semibold mb-3">Today’s appointments</h5>
+            <ul class="list-group">
+                {% for appointment in today_appointments %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ appointment.patient.full_name }} with {{ appointment.doctor.first_name }} {{ appointment.doctor.last_name }}</span>
+                    <span class="badge bg-primary">{{ appointment.appointment_time }}</span>
+                </li>
+                {% else %}
+                <li class="list-group-item text-muted">No appointments today.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

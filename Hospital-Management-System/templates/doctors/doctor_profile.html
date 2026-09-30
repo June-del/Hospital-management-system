@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body text-center p-4">
+                {% if doctor.profile_photo %}
+                    <img src="{{ url_for('doctors.uploaded_doctor_photo', filename=doctor.profile_photo) }}" class="rounded-circle mb-3" width="140" height="140" style="object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mb-3" style="width: 140px; height: 140px; margin: 0 auto;">
+                        <i class="fas fa-user-md fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+                <h4 class="fw-bold">{{ doctor.first_name }} {{ doctor.last_name }}</h4>
+                <p class="text-muted mb-0">{{ doctor.doctor_id }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold mb-1">Doctor Profile</h3>
+                        <p class="text-muted mb-0">Professional and contact details</p>
+                    </div>
+                    <a href="{{ url_for('doctors.edit_doctor', doctor_id=doctor.id) }}" class="btn btn-warning">Edit</a>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6"><strong>Gender:</strong> {{ doctor.gender }}</div>
+                    <div class="col-md-6"><strong>Date of Birth:</strong> {{ doctor.date_of_birth }}</div>
+                    <div class="col-md-6"><strong>Specialization:</strong> {{ doctor.specialization }}</div>
+                    <div class="col-md-6"><strong>Department:</strong> {{ doctor.department }}</div>
+                    <div class="col-md-6"><strong>Qualification:</strong> {{ doctor.qualification }}</div>
+                    <div class="col-md-6"><strong>Years of Experience:</strong> {{ doctor.years_of_experience }}</div>
+                    <div class="col-md-6"><strong>Phone:</strong> {{ doctor.phone }}</div>
+                    <div class="col-md-6"><strong>Email:</strong> {{ doctor.email }}</div>
+                    <div class="col-md-6"><strong>License Number:</strong> {{ doctor.license_number }}</div>
+                    <div class="col-md-6"><strong>Consultation Fee:</strong> {{ doctor.consultation_fee }}</div>
+                    <div class="col-md-6"><strong>Working Days:</strong> {{ doctor.working_days }}</div>
+                    <div class="col-md-6"><strong>Working Hours:</strong> {{ doctor.working_hours }}</div>
+                    <div class="col-md-6"><strong>Status:</strong> {{ doctor.status }}</div>
+                    <div class="col-md-6"><strong>Date Joined:</strong> {{ doctor.date_joined.strftime('%Y-%m-%d') }}</div>
+                    <div class="col-md-12"><strong>Address:</strong> {{ doctor.address }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

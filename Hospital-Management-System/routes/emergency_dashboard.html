@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Emergency Dashboard</h1>
+        <a href="{{ url_for('emergency.new_emergency_call') }}" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i class="fas fa-phone-plus fa-sm text-white-50"></i> Log New Emergency</a>
+    </div>
+
+    <!-- Statistic Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Active Emergencies</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.active_emergencies }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-siren-on fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Ambulances Available</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.ambulances_available }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-ambulance fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ambulances On Duty</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.ambulances_on_duty }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-shipping-fast fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Avg. Response Time</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.avg_response_time }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-stopwatch fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GPS Placeholder and Active Emergencies -->
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Live Ambulance Tracking (GPS Placeholder)</h6>
+                </div>
+                <div class="card-body text-center">
+                    <img src="https://i.stack.imgur.com/gJmeJ.png" alt="Map Placeholder" style="max-width: 100%; height: auto; border-radius: 5px;">
+                    <p class="mt-2 text-muted">This is a placeholder for a live map tracking system.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">Active Emergency Queue</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for call in active_emergencies %}
+                        <a href="{{ url_for('emergency.list_emergency_calls') }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ call.emergency_type }} - {{ call.location | truncate(20) }}</h5>
+                                <small>{{ call.created_at.strftime('%H:%M') }}</small>
+                            </div>
+                            <p class="mb-1">Caller: {{ call.caller_name }} ({{ call.phone }})</p>
+                            <small>Status: <span class="badge badge-{{ 'warning' if call.status == 'Pending' else 'info' }}">{{ call.status }}</span></small>
+                        </a>
+                        {% else %}
+                        <div class="list-group-item">
+                            <p class="text-center my-2">No active emergencies.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('emergency.list_emergency_calls') }}">View Full Queue &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

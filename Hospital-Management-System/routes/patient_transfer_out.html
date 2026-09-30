@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h5>Patient: {{ patient.full_name }} (ID: {{ patient.patient_id }})</h5>
+                <p><strong>Current Ward:</strong> {{ admission.bed.room.ward.name }}</p>
+                <p><strong>Current Bed:</strong> {{ admission.bed.bed_number }}</p>
+                <p><strong>Admission Date:</strong> {{ admission.admission_date.strftime('%d %b %Y %H:%M') }}</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('nurse_portal.patient_transfer_out', patient_id=patient.id) }}" onsubmit="return confirm('Are you sure you want to transfer/discharge this patient? This action will free up their current bed.');">
+                <div class="form-group">
+                    <label for="transfer_type">Transfer/Discharge Type</label>
+                    <select class="form-control" id="transfer_type" name="transfer_type" required>
+                        <option value="">Select Type...</option>
+                        <option value="Discharge Home">Discharge Home</option>
+                        <option value="Transfer to Another Ward">Transfer to Another Ward</option>
+                        <option value="Transfer to Another Facility">Transfer to Another Facility</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reason">Reason/Notes</label>
+                    <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Provide details for transfer or discharge..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-danger mt-3">Confirm Transfer/Discharge</button>
+                <a href="{{ url_for('nurse_portal.view_patient_details', patient_id=patient.id) }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

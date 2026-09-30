@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('nurse_portal.record_vitals', patient_id=patient.id) }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="temperature">Temperature (°C)</label>
+                            <input type="number" step="0.1" class="form-control" id="temperature" name="temperature" placeholder="e.g., 37.0">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="pulse_rate">Pulse Rate (BPM)</label>
+                            <input type="number" class="form-control" id="pulse_rate" name="pulse_rate" placeholder="e.g., 72">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="bp_systolic">Blood Pressure (Systolic mmHg)</label>
+                            <input type="number" class="form-control" id="bp_systolic" name="bp_systolic" placeholder="e.g., 120">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="bp_diastolic">Blood Pressure (Diastolic mmHg)</label>
+                            <input type="number" class="form-control" id="bp_diastolic" name="bp_diastolic" placeholder="e.g., 80">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="respiratory_rate">Respiratory Rate (BPM)</label>
+                            <input type="number" class="form-control" id="respiratory_rate" name="respiratory_rate" placeholder="e.g., 16">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="oxygen_saturation">Oxygen Saturation (SpO2 %)</label>
+                            <input type="number" class="form-control" id="oxygen_saturation" name="oxygen_saturation" placeholder="e.g., 98">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Any additional observations..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Record Vitals</button>
+                <a href="{{ url_for('nurse_portal.view_patient_details', patient_id=patient.id) }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

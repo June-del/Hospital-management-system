@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Doctor Portal Dashboard</h1>
+        <a href="{{ url_for('doctor_portal.patient_search') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-search fa-sm text-white-50"></i> Search Patients</a>
+    </div>
+
+    <!-- Statistic Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Today's Patients</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ today_appointments|length }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-user-injured fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Upcoming Appointments</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ upcoming_appointments|length }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-calendar-check fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pending Lab Results</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_lab_results|length }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-flask fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Imaging Reports</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_imaging_reports|length }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-x-ray fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Appointments -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Today's Appointments</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Patient</th>
+                            <th>Visit Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appt in today_appointments %}
+                        <tr>
+                            <td>{{ appt.appointment_time }}</td>
+                            <td><a href="{{ url_for('doctor_portal.view_patient_history', patient_id=appt.patient.id) }}">{{ appt.patient.full_name }}</a></td>
+                            <td>{{ appt.visit_type }}</td>
+                            <td><span class="badge badge-info">{{ appt.status }}</span></td>
+                            <td>
+                                <a href="{{ url_for('doctor_portal.create_medical_record', patient_id=appt.patient.id) }}" class="btn btn-sm btn-primary">Create EMR</a>
+                                <form method="POST" action="{{ url_for('doctor_portal.complete_consultation', appointment_id=appt.id) }}" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No appointments scheduled for today.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Pending Imaging Reports -->
+    {% if pending_imaging_reports %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-warning">Pending Imaging Reports</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Request #</th>
+                            <th>Patient</th>
+                            <th>Service</th>
+                            <th>Status</th>
+                            <th>Requested Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in pending_imaging_reports %}
+                        <tr>
+                            <td>{{ req.request_number }}</td>
+                            <td><a href="{{ url_for('doctor_portal.view_patient_history', patient_id=req.patient.id) }}">{{ req.patient.full_name }}</a></td>
+                            <td>{{ req.service.name }}</td>
+                            <td><span class="badge badge-warning">{{ req.status }}</span></td>
+                            <td>{{ req.requested_date.strftime('%Y-%m-%d') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

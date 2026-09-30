@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">{{ title }}</h2>
+                <p class="text-muted mb-0">Create or update an electronic medical record.</p>
+            </div>
+            <a href="{{ url_for('emr.emr_index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back</a>
+        </div>
+
+        <form method="post" class="row g-3">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="col-md-6">
+                <label class="form-label">Patient</label>
+                <select class="form-select" name="patient_id" required>
+                    <option value="">Select patient</option>
+                    {% for patient in patients %}
+                    <option value="{{ patient.id }}" {% if record and record.patient_id == patient.id %}selected{% endif %}>{{ patient.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Doctor</label>
+                <select class="form-select" name="doctor_id" required>
+                    <option value="">Select doctor</option>
+                    {% for doctor in doctors %}
+                    <option value="{{ doctor.id }}" {% if record and record.doctor_id == doctor.id %}selected{% endif %}>{{ doctor.first_name }} {{ doctor.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Visit Date</label>
+                <input type="date" class="form-control" name="visit_date" value="{{ record.visit_date.strftime('%Y-%m-%d') if record else '' }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Follow-up Date</label>
+                <input type="date" class="form-control" name="follow_up_date" value="{{ record.follow_up_date.strftime('%Y-%m-%d') if record and record.follow_up_date else '' }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Chief Complaint</label>
+                <textarea class="form-control" name="chief_complaint" rows="2" required>{{ record.chief_complaint if record else '' }}</textarea>
+            </div>
+
+            <div class="col-12">
+                <h5 class="fw-semibold mt-2">Vitals</h5>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Temperature</label>
+                <input type="text" class="form-control" name="temperature" value="{{ record.temperature if record else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Blood Pressure</label>
+                <input type="text" class="form-control" name="blood_pressure" value="{{ record.blood_pressure if record else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Pulse Rate</label>
+                <input type="text" class="form-control" name="pulse_rate" value="{{ record.pulse_rate if record else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Respiratory Rate</label>
+                <input type="text" class="form-control" name="respiratory_rate" value="{{ record.respiratory_rate if record else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Weight</label>
+                <input type="text" class="form-control" name="weight" value="{{ record.weight if record else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Height</label>
+                <input type="text" class="form-control" name="height" value="{{ record.height if record else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">BMI</label>
+                <input type="text" class="form-control" name="bmi" value="{{ record.bmi if record else '' }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Oxygen Saturation</label>
+                <input type="text" class="form-control" name="oxygen_saturation" value="{{ record.oxygen_saturation if record else '' }}">
+            </div>
+
+            <div class="col-12">
+                <h5 class="fw-semibold mt-2">Clinical Information</h5>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Symptoms</label>
+                <textarea class="form-control" name="symptoms" rows="3">{{ record.symptoms if record else '' }}</textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Medical History</label>
+                <textarea class="form-control" name="medical_history" rows="3">{{ record.medical_history if record else '' }}</textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Allergies</label>
+                <textarea class="form-control" name="allergies" rows="3">{{ record.allergies if record else '' }}</textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Physical Examination</label>
+                <textarea class="form-control" name="physical_examination" rows="3">{{ record.physical_examination if record else '' }}</textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Diagnosis</label>
+                <textarea class="form-control" name="diagnosis" rows="3">{{ record.diagnosis if record else '' }}</textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Treatment Plan</label>
+                <textarea class="form-control" name="treatment_plan" rows="3">{{ record.treatment_plan if record else '' }}</textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Prescription</label>
+                <textarea class="form-control" name="prescription" rows="3">{{ record.prescription if record else '' }}</textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Lab Tests Requested</label>
+                <textarea class="form-control" name="lab_tests_requested" rows="3">{{ record.lab_tests_requested if record else '' }}</textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Imaging Requested</label>
+                <textarea class="form-control" name="imaging_requested" rows="3">{{ record.imaging_requested if record else '' }}</textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Clinical Notes</label>
+                <textarea class="form-control" name="clinical_notes" rows="3">{{ record.clinical_notes if record else '' }}</textarea>
+            </div>
+
+            <div class="col-12">
+                <button class="btn btn-primary" type="submit"><i class="fas fa-save me-1"></i>Save Record</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

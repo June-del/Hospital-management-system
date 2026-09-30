@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('radiology.create_request') }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="patient_id">Patient</label>
+                            <select class="form-control" id="patient_id" name="patient_id" required>
+                                <option value="">Select a Patient...</option>
+                                {% for patient in patients %}
+                                <option value="{{ patient.id }}">{{ patient.full_name }} (ID: {{ patient.patient_id }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="doctor_id">Requesting Doctor</label>
+                            <select class="form-control" id="doctor_id" name="doctor_id" required>
+                                <option value="">Select a Doctor...</option>
+                                {% for doctor in doctors %}
+                                <option value="{{ doctor.id }}" {% if current_user.role == 'Doctor' and current_user.id == doctor.id %}selected{% endif %}>Dr. {{ doctor.first_name }} {{ doctor.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="service_id">Imaging Service</label>
+                            <select class="form-control" id="service_id" name="service_id" required>
+                                <option value="">Select a Service...</option>
+                                {% for service in services %}
+                                <option value="{{ service.id }}">{{ service.department.name }} - {{ service.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="priority">Priority</label>
+                            <select class="form-control" id="priority" name="priority" required>
+                                <option value="Routine">Routine</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Submit Request</button>
+                <a href="{{ url_for('radiology.index') }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

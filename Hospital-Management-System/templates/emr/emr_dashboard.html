@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <h2 class="fw-bold mb-4">EMR Dashboard</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="border rounded-4 p-3 h-100">
+                    <div class="text-muted small">Total Medical Records</div>
+                    <div class="display-6 fw-bold">{{ total_records }}</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="border rounded-4 p-3 h-100">
+                    <div class="text-muted small">Records Created Today</div>
+                    <div class="display-6 fw-bold">{{ records_created_today }}</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="border rounded-4 p-3 h-100">
+                    <div class="text-muted small">Patients Seen Today</div>
+                    <div class="display-6 fw-bold">{{ patients_seen_today }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

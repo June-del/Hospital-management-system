@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }} - {{ today.strftime('%d %b %Y') }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Full Name</th>
+                            <th>Gender</th>
+                            <th>Date of Birth</th>
+                            <th>Last Visit Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if patients %}
+                            {% for patient in patients %}
+                            <tr>
+                                <td>{{ patient.patient_id }}</td>
+                                <td>{{ patient.full_name }}</td>
+                                <td>{{ patient.gender }}</td>
+                                <td>{{ patient.date_of_birth.strftime('%d %b %Y') }}</td>
+                                <td>
+                                    {% set latest_record = patient.medical_records|sort(attribute='visit_date', reverse=True)|first %}
+                                    {{ latest_record.chief_complaint|truncate(100) if latest_record else 'N/A' }}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('doctor_portal.view_patient_history', patient_id=patient.id) }}" class="btn btn-sm btn-info">View History</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No patients seen today.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

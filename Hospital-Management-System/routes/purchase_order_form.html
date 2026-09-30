@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('procurement.generate_po') }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="supplier_id">Supplier</label>
+                            <select class="form-control" id="supplier_id" name="supplier_id" required>
+                                <option value="">Select Supplier...</option>
+                                {% for supplier in suppliers %}
+                                <option value="{{ supplier.id }}">{{ supplier.company_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="expected_delivery_date">Expected Delivery Date</label>
+                            <input type="date" class="form-control" id="expected_delivery_date" name="expected_delivery_date">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="requisition_id">Link to Purchase Request (Optional)</label>
+                    <select class="form-control" id="requisition_id" name="requisition_id">
+                        <option value="">Select Purchase Request...</option>
+                        {% for req in purchase_requests %}
+                        <option value="{{ req.id }}">PR-{{ req.request_number }} ({{ req.department.name }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <hr>
+                <h5>Order Items</h5>
+                <div id="po-items-container">
+                    <div class="row po-item-row mb-2">
+                        <div class="col-md-5">
+                            <select class="form-control product-select" name="item_id" required>
+                                <option value="">Select Product...</option>
+                                {% for product in products %}
+                                <option value="{{ product.id }}">{{ product.name }} ({{ product.unit_of_measure }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control" name="quantity" placeholder="Quantity" min="1" required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" step="0.01" class="form-control" name="unit_price" placeholder="Unit Price" min="0.01" required>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-danger btn-sm remove-po-item">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="add-po-item-btn" class="btn btn-secondary btn-sm mt-2"><i class="fas fa-plus"></i> Add Another Item</button>
+
+                <button type="submit" class="btn btn-primary mt-4">Generate Purchase Order</button>
+                <a href="{{ url_for('procurement.list_purchase_orders') }}" class="btn btn-secondary mt-4">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const poItemsContainer = document.getElementById('po-items-container');
+    const addPoItemBtn = document.getElementById('add-po-item-btn');
+
+    addPoItemBtn.addEventListener('click', function() {
+        const newItemRow = document.createElement('div');
+        newItemRow.classList.add('row', 'po-item-row', 'mb-2');
+        newItemRow.innerHTML = `
+            <div class="col-md-5">
+                <select class="form-control product-select" name="item_id" required>
+                    <option value="">Select Product...</option>
+                    {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }} ({{ product.unit_of_measure }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="number" class="form-control" name="quantity" placeholder="Quantity" min="1" required>
+            </div>
+            <div class="col-md-3">
+                <input type="number" step="0.01" class="form-control" name="unit_price" placeholder="Unit Price" min="0.01" required>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-danger btn-sm remove-po-item">Remove</button>
+            </div>
+        `;
+        poItemsContainer.appendChild(newItemRow);
+    });
+
+    poItemsContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-po-item')) {
+            e.target.closest('.po-item-row').remove();
+        }
+    });
+
+    // Optional: Populate PO items from a selected Purchase Request
+    const requisitionSelect = document.getElementById('requisition_id');
+    requisitionSelect.addEventListener('change', function() {
+        const selectedReqId = this.value;
+        // In a real app, you'd fetch PR items via AJAX and populate the form
+        if (selectedReqId) {
+            alert("Feature to auto-populate items from Purchase Request is under development.");
+            // Example: fetch(`/procurement/api/request/${selectedReqId}/items`)
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('wards.admit_patient') }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="patient_id">Patient</label>
+                            <select class="form-control" id="patient_id" name="patient_id" required>
+                                <option value="">Select a Patient...</option>
+                                {% for patient in patients %}
+                                <option value="{{ patient.id }}">{{ patient.full_name }} (ID: {{ patient.patient_id }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="bed_id">Available Bed</label>
+                            <select class="form-control" id="bed_id" name="bed_id" required>
+                                <option value="">Select a Bed...</option>
+                                {% for bed in beds %}
+                                <option value="{{ bed.id }}">{{ bed.ward.name }} - {{ bed.room.room_number }} - Bed {{ bed.bed_number }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="doctor_id">Admitting Doctor</label>
+                            <select class="form-control" id="doctor_id" name="doctor_id" required>
+                                <option value="">Select a Doctor...</option>
+                                {% for doctor in doctors %}
+                                <option value="{{ doctor.id }}">Dr. {{ doctor.first_name }} {{ doctor.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="reason">Reason for Admission</label>
+                        <textarea class="form-control" id="reason" name="reason" rows="3"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Admit Patient</button>
+                <a href="{{ url_for('wards.index') }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

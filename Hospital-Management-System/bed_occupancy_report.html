@@ -1,0 +1,90 @@
+{% extends "reporting/report_base.html" %}
+
+{% block report_content %}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card border-start-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Beds</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ report_data.total_beds }}</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-bed fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-start-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Available Beds</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ report_data.available_beds }}</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-check-circle fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-start-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Occupied Beds</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ report_data.occupied_beds }}</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-user-friends fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-start-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Occupancy Rate</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ "%.2f"|format(report_data.occupancy_rate) }}%</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-chart-pie fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h5>Current Bed Occupancy Details</h5>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>Patient ID</th>
+                <th>Ward</th>
+                <th>Room</th>
+                <th>Bed Number</th>
+                <th>Admission Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for admission in report_data.admissions_in_beds %}
+            <tr>
+                <td>{{ admission.patient.full_name }}</td>
+                <td>{{ admission.patient.patient_id }}</td>
+                <td>{{ admission.bed.room.ward.name }}</td>
+                <td>{{ admission.bed.room.room_number }}</td>
+                <td>{{ admission.bed.bed_number }}</td>
+                <td>{{ admission.admission_date.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No beds currently occupied.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

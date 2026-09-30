@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4 p-lg-5">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1">{{ title }}</h2>
+                        <p class="text-muted mb-0">
+                            Enter complete patient information below.
+                        </p>
+                    </div>
+
+                    <a class="btn btn-outline-secondary"
+                       href="{{ url_for('patients.patients_index') }}">
+                        Back
+                    </a>
+                </div>
+
+                <form method="POST"
+                      enctype="multipart/form-data">
+
+                    {{ form.hidden_tag() }}
+
+                    <div class="row g-3">
+
+                        <!-- Full Name -->
+                        <div class="col-md-6">
+                            {{ form.full_name.label(class="form-label") }}
+                            {{ form.full_name(class="form-control") }}
+
+                            {% for error in form.full_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="col-md-3">
+                            {{ form.gender.label(class="form-label") }}
+                            {{ form.gender(class="form-select") }}
+
+                            {% for error in form.gender.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Date of Birth -->
+                        <div class="col-md-3">
+                            {{ form.date_of_birth.label(class="form-label") }}
+                            {{ form.date_of_birth(class="form-control") }}
+
+                            {% for error in form.date_of_birth.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Blood Group -->
+                        <div class="col-md-3">
+                            {{ form.blood_group.label(class="form-label") }}
+                            {{ form.blood_group(class="form-select") }}
+
+                            {% for error in form.blood_group.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="col-md-3">
+                            {{ form.phone.label(class="form-label") }}
+                            {{ form.phone(class="form-control") }}
+
+                            {% for error in form.phone.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control") }}
+
+                            {% for error in form.email.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Insurance -->
+                        <div class="col-md-3">
+                            {{ form.insurance_provider.label(class="form-label") }}
+                            {{ form.insurance_provider(class="form-control") }}
+
+                            {% for error in form.insurance_provider.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Address -->
+                        <div class="col-md-12">
+                            {{ form.address.label(class="form-label") }}
+                            {{ form.address(class="form-control", rows="2") }}
+
+                            {% for error in form.address.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Emergency Contact -->
+                        <div class="col-md-6">
+                            {{ form.emergency_contact.label(class="form-label") }}
+                            {{ form.emergency_contact(class="form-control") }}
+
+                            {% for error in form.emergency_contact.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Next of Kin -->
+                        <div class="col-md-6">
+                            {{ form.next_of_kin.label(class="form-label") }}
+                            {{ form.next_of_kin(class="form-control") }}
+
+                            {% for error in form.next_of_kin.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Allergies -->
+                        <div class="col-md-6">
+                            {{ form.allergies.label(class="form-label") }}
+                            {{ form.allergies(class="form-control", rows="2") }}
+
+                            {% for error in form.allergies.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Medical Conditions -->
+                        <div class="col-md-6">
+                            {{ form.medical_conditions.label(class="form-label") }}
+                            {{ form.medical_conditions(class="form-control", rows="2") }}
+
+                            {% for error in form.medical_conditions.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Photo -->
+                        <div class="col-md-12">
+                            {{ form.photo.label(class="form-label") }}
+                            {{ form.photo(class="form-control") }}
+
+                            {% for error in form.photo.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+
+                        {{ form.submit(class="btn btn-primary") }}
+
+                        <a href="{{ url_for('patients.patients_index') }}"
+                           class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

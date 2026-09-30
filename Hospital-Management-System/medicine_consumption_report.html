@@ -1,0 +1,30 @@
+{% extends "reporting/report_base.html" %}
+
+{% block report_content %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Medicine Name</th>
+                <th>Total Quantity Consumed</th>
+                <th>Total Revenue Generated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for medicine in report_data %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ medicine.item_name }}</td>
+                <td>{{ medicine.total_quantity }}</td>
+                <td>${{ "%.2f"|format(medicine.total_revenue) }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No medicine consumption data found for the selected period.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

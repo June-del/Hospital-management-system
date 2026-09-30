@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-2">Total Patients</h4>
+                <p class="display-4 fw-bold text-primary mb-0">{{ total_patients }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-2">Recently Registered</h4>
+                <ul class="list-group list-group-flush">
+                    {% for patient in recent_patients %}
+                    <li class="list-group-item px-0">
+                        {{ patient.full_name }} <span class="text-muted">({{ patient.patient_id }})</span>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item px-0 text-muted">No patients registered yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

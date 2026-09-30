@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <p>This page is a placeholder for various security and audit reports.</p>
+            <p>Reports to be implemented:</p>
+            <ul>
+                <li>User Activity Report</li>
+                <li>Security Incident Report</li>
+                <li>Audit Trail Report</li>
+            </ul>
+            <a href="{{ url_for('security_audit.dashboard') }}" class="btn btn-primary mt-3">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

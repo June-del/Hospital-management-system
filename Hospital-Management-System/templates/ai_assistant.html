@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold">{{ title }}</h1>
+        <p class="text-muted mb-0">Your clinical decision-support partner.</p>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div id="ai-chat-container" class="d-flex flex-column" style="height: 70vh;">
+            <!-- Chat Messages -->
+            <div id="chat-messages" class="p-3 flex-grow-1" style="overflow-y: auto;">
+                <div class="d-flex flex-row justify-content-start mb-3">
+                    <div class="p-3 ms-3 message-bubble-ai">
+                        <p class="small mb-0">Hello! I am your AI Clinical Assistant. How can I help you today? Please select a task or type a query below.</p>
+                        <hr class="my-2">
+                        <p class="text-muted small mb-0"><em><strong>Disclaimer:</strong> AI-generated content is for decision support only and must be verified by a qualified professional.</em></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div id="quick-actions" class="p-2 border-top">
+                <small class="text-muted px-2">Common Tasks (requires patient context):</small>
+                <div class="d-flex flex-wrap">
+                    <button class="btn btn-sm btn-outline-primary m-1" data-task="summarize_history">Summarize History</button>
+                    <button class="btn btn-sm btn-outline-primary m-1" data-task="generate_discharge_summary">Discharge Summary</button>
+                    <button class="btn btn-sm btn-outline-primary m-1" data-task="explain_lab_results">Explain Labs</button>
+                    <button class="btn btn-sm btn-outline-primary m-1" data-task="explain_radiology_report">Explain Imaging</button>
+                    <button class="btn btn-sm btn-outline-primary m-1" data-task="draft_referral_letter">Draft Referral</button>
+                    <button class="btn btn-sm btn-outline-primary m-1" data-task="draft_clinical_notes">Draft SOAP Note</button>
+                    <button class="btn btn-sm btn-outline-primary m-1" data-task="draft_prescription">Draft Prescription</button>
+                    <button class="btn btn-sm btn-outline-primary m-1" data-task="patient_education">Patient Education</button>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-3 border-top bg-body-tertiary">
+                <div class="input-group">
+                    <input type="text" id="chat-input" class="form-control form-control-lg" placeholder="Type your query or ask to search policy..." autocomplete="off">
+                    <button id="send-button" class="btn btn-primary" type="button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .message-bubble-user {
+        background-color: var(--bs-primary);
+        color: white;
+        border-radius: 1rem 1rem 0 1rem;
+    }
+    .message-bubble-ai {
+        background-color: var(--bs-secondary-bg);
+        border: 1px solid var(--bs-border-color);
+        border-radius: 1rem 1rem 1rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+    const quickActions = document.getElementById('quick-actions');
+
+    function addMessage(content, sender) {
+        const messageWrapper = document.createElement('div');
+        messageWrapper.classList.add('d-flex', 'flex-row', 'mb-3', sender === 'user' ? 'justify-content-end' : 'justify-content-start');
+
+        const messageBubble = document.createElement('div');
+        messageBubble.classList.add('p-3', sender === 'user' ? 'me-3 message-bubble-user' : 'ms-3 message-bubble-ai');
+        
+        const messageContent = document.createElement('p');
+        messageContent.classList.add('small', 'mb-0');
+        messageContent.innerHTML = content; // Use innerHTML to render HTML from AI response
+
+        messageBubble.appendChild(messageContent);
+        messageWrapper.appendChild(messageBubble);
+        chatMessages.appendChild(messageWrapper);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const typingBubble = `
+            <div class="d-flex align-items-center">
+                <div class="spinner-grow spinner-grow-sm text-primary" role="status"></div>
+                <strong class="ms-2 text-muted">Assistant is thinking...</strong>
+            </div>`;
+        addMessage(typingBubble, 'ai');
+    }
+
+    function removeTypingIndicator() {
+        const lastMessage = chatMessages.querySelector('.d-flex.justify-content-start:last-child');
+        if (lastMessage && lastMessage.innerText.includes("is thinking...")) {
+            lastMessage.remove();
+        }
+    }
+
+    async function handleSend(task, userMessage) {
+        if (!task && !userMessage) return;
+
+        let displayMessage = userMessage;
+        let query = userMessage;
+        let finalTask = task;
+
+        if (userMessage) {
+            // Simple logic to detect if it's a policy search
+            if (userMessage.toLowerCase().startsWith('search policy for') || userMessage.toLowerCase().startsWith('search for')) {
+                finalTask = 'search_policy';
+                query = userMessage.replace(/search policy for|search for/i, '').trim();
+                displayMessage = `Searching policy for: "${query}"`;
+            } else {
+                finalTask = 'generic_query';
+            }
+            addMessage(displayMessage, 'user');
+        }
+        
+        chatInput.value = '';
+        showTypingIndicator();
+
+        // This is where you would get context, e.g., from the URL or a hidden input
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientId = urlParams.get('patient_id');
+
+        try {
+            const response = await fetch("{{ url_for('ai_assistant.ask_ai') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ 
+                    task: finalTask, 
+                    query: query,
+                    patient_id: patientId 
+                }),
+            });
+
+            removeTypingIndicator();
+
+            if (!response.ok) {
+                addMessage('Sorry, I encountered an error. Please try again.', 'ai');
+                return;
+            }
+
+            const data = await response.json();
+            addMessage(data.response, 'ai');
+
+        } catch (error) {
+            removeTypingIndicator();
+            addMessage('Could not connect to the AI assistant. Please check your connection.', 'ai');
+            console.error("AI Assistant Error:", error);
+        }
+    }
+
+    sendButton.addEventListener('click', () => {
+        handleSend(null, chatInput.value.trim());
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend(null, chatInput.value.trim());
+        }
+    });
+
+    quickActions.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            const task = e.target.dataset.task;
+            const taskName = e.target.innerText;
+            addMessage(`Request: ${taskName}`, 'user');
+            handleSend(task, null);
+        }
+    });
+});
+</script>
+{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .message-bubble-user {
+        background-color: #4e73df;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 15px 15px 0 15px;
+        max-width: 70%;
+        float: right;
+        clear: both;
+    }
+    .message-bubble-ai {
+        background-color: #f8f9fc;
+        border: 1px solid #e3e6f0;
+        padding: 10px 15px;
+        border-radius: 15px 15px 15px 0;
+        max-width: 70%;
+        float: left;
+        clear: both;
+    }
+    .user-message, .ai-message {
+        overflow: auto;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+    const quickActions = document.getElementById('quick-actions');
+
+    function addMessage(content, sender) {
+        const messageWrapper = document.createElement('div');
+        messageWrapper.classList.add(sender === 'user' ? 'user-message' : 'ai-message', 'mb-2');
+
+        const messageBubble = document.createElement('div');
+        messageBubble.classList.add(sender === 'user' ? 'message-bubble-user' : 'message-bubble-ai');
+        messageBubble.innerHTML = content; // Use innerHTML to render HTML from AI response
+
+        messageWrapper.appendChild(messageBubble);
+        chatMessages.appendChild(messageWrapper);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const typingBubble = `
+            <div class="d-flex align-items-center">
+                <div class="spinner-grow spinner-grow-sm" role="status"></div>
+                <strong class="ml-2">Assistant is typing...</strong>
+            </div>`;
+        addMessage(typingBubble, 'ai');
+    }
+
+    function removeTypingIndicator() {
+        const messages = chatMessages.querySelectorAll('.ai-message');
+        if (messages.length > 0) {
+            const lastMessage = messages[messages.length - 1];
+            if (lastMessage.innerText.includes("is typing...")) {
+                lastMessage.remove();
+            }
+        }
+    }
+
+    async function handleSend(task, userMessage) {
+        if (!task && !userMessage) return;
+
+        if (userMessage) {
+            addMessage(userMessage, 'user');
+        }
+        
+        chatInput.value = '';
+        showTypingIndicator();
+
+        // This is where you would get context, e.g., from the URL or a hidden input
+        // For demonstration, we'll assume a patient ID might be in the URL query string
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientId = urlParams.get('patient_id');
+
+        try {
+            const response = await fetch("{{ url_for('ai_assistant.ask_ai') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    task: task || 'generic_query', 
+                    query: userMessage,
+                    patient_id: patientId 
+                }),
+            });
+
+            removeTypingIndicator();
+
+            if (!response.ok) {
+                addMessage('Sorry, I encountered an error. Please try again.', 'ai');
+                return;
+            }
+
+            const data = await response.json();
+            addMessage(data.response, 'ai');
+
+        } catch (error) {
+            removeTypingIndicator();
+            addMessage('Could not connect to the AI assistant. Please check your connection.', 'ai');
+            console.error("AI Assistant Error:", error);
+        }
+    }
+
+    sendButton.addEventListener('click', () => {
+        handleSend(null, chatInput.value.trim());
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSend(null, chatInput.value.trim());
+        }
+    });
+
+    quickActions.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            const task = e.target.dataset.task;
+            const taskName = e.target.innerText;
+            addMessage(`Request: ${taskName}`, 'user');
+            handleSend(task, null);
+        }
+    });
+});
+</script>
+{% endblock %}

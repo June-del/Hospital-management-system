@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('procurement.create_purchase_request') }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="department_id">Requesting Department</label>
+                            <select class="form-control" id="department_id" name="department_id" required>
+                                <option value="">Select Department...</option>
+                                {% for dept in departments %}
+                                <option value="{{ dept.id }}" {% if current_user.employee and current_user.employee.department_id == dept.id %}selected{% endif %}>{{ dept.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="priority">Priority</label>
+                            <select class="form-control" id="priority" name="priority" required>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+                <h5>Items Requested</h5>
+                <div id="items-container">
+                    <div class="row item-row mb-2">
+                        <div class="col-md-6">
+                            <select class="form-control product-select" name="item_id" required>
+                                <option value="">Select Product...</option>
+                                {% for product in products %}
+                                <option value="{{ product.id }}">{{ product.name }} ({{ product.unit_of_measure }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" class="form-control" name="quantity" placeholder="Quantity" min="1" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-sm remove-item">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="add-item-btn" class="btn btn-secondary btn-sm mt-2"><i class="fas fa-plus"></i> Add Another Item</button>
+
+                <button type="submit" class="btn btn-primary mt-4">Submit Request</button>
+                <a href="{{ url_for('procurement.list_purchase_requests') }}" class="btn btn-secondary mt-4">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const itemsContainer = document.getElementById('items-container');
+    const addItemBtn = document.getElementById('add-item-btn');
+
+    addItemBtn.addEventListener('click', function() {
+        const newItemRow = document.createElement('div');
+        newItemRow.classList.add('row', 'item-row', 'mb-2');
+        newItemRow.innerHTML = `
+            <div class="col-md-6">
+                <select class="form-control product-select" name="item_id" required>
+                    <option value="">Select Product...</option>
+                    {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }} ({{ product.unit_of_measure }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <input type="number" class="form-control" name="quantity" placeholder="Quantity" min="1" required>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-danger btn-sm remove-item">Remove</button>
+            </div>
+        `;
+        itemsContainer.appendChild(newItemRow);
+    });
+
+    itemsContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-item')) {
+            e.target.closest('.item-row').remove();
+        }
+    });
+});
+</script>
+{% endblock %}

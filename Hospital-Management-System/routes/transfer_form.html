@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h5>Patient: {{ admission.patient.full_name }}</h5>
+                <p>
+                    <strong>Current Bed:</strong> 
+                    {{ admission.bed.room.ward.name }} - Room {{ admission.bed.room.room_number }} - Bed {{ admission.bed.bed_number }}
+                </p>
+            </div>
+
+            <form method="POST" action="{{ url_for('wards.transfer_patient', admission_id=admission.id) }}">
+                <div class="form-group">
+                    <label for="new_bed_id">Select New Available Bed</label>
+                    <select class="form-control" id="new_bed_id" name="new_bed_id" required>
+                        <option value="">Choose a new bed...</option>
+                        {% for bed in beds %}
+                        <option value="{{ bed.id }}">
+                            {{ bed.room.ward.name }} - Room {{ bed.room.room_number }} - Bed {{ bed.bed_number }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Confirm Transfer</button>
+                <a href="{{ url_for('wards.view_admission', admission_id=admission.id) }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

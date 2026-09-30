@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <form method="POST" action="{{ url_for('system_admin.settings') }}" enctype="multipart/form-data">
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
+            <button type="submit" class="btn btn-primary shadow-sm"><i class="fas fa-save fa-sm text-white-50"></i> Save All Settings</button>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- Hospital Information -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Hospital Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="hospital_name">Hospital Name</label>
+                            <input type="text" class="form-control" id="hospital_name" name="hospital_name" value="{{ settings.get('hospital_name', '') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="hospital_address">Address</label>
+                            <textarea class="form-control" id="hospital_address" name="hospital_address" rows="2">{{ settings.get('hospital_address', '') }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="hospital_phone">Phone</label>
+                            <input type="text" class="form-control" id="hospital_phone" name="hospital_phone" value="{{ settings.get('hospital_phone', '') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="hospital_email">Email</label>
+                            <input type="email" class="form-control" id="hospital_email" name="hospital_email" value="{{ settings.get('hospital_email', '') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="hospital_website">Website</label>
+                            <input type="url" class="form-control" id="hospital_website" name="hospital_website" value="{{ settings.get('hospital_website', '') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="hospital_logo">Hospital Logo</label>
+                            <input type="file" class="form-control-file" id="hospital_logo" name="hospital_logo">
+                            {% if settings.get('hospital_logo') %}
+                            <small class="form-text text-muted">Current logo: {{ settings.get('hospital_logo') }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Settings -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">System Settings</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="system_timezone">Timezone</label>
+                            <input type="text" class="form-control" id="system_timezone" name="system_timezone" value="{{ settings.get('system_timezone', 'UTC') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="system_currency">Currency Symbol</label>
+                            <input type="text" class="form-control" id="system_currency" name="system_currency" value="{{ settings.get('system_currency', '$') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="system_language">Default Language</label>
+                            <input type="text" class="form-control" id="system_language" name="system_language" value="{{ settings.get('system_language', 'en-US') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="system_date_format">Date Format</label>
+                            <input type="text" class="form-control" id="system_date_format" name="system_date_format" value="{{ settings.get('system_date_format', '%Y-%m-%d') }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <!-- Email Settings -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Email Settings (SMTP)</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="smtp_server">SMTP Server</label>
+                            <input type="text" class="form-control" id="smtp_server" name="smtp_server" value="{{ settings.get('smtp_server', '') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="smtp_port">SMTP Port</label>
+                            <input type="number" class="form-control" id="smtp_port" name="smtp_port" value="{{ settings.get('smtp_port', '587') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="smtp_user">SMTP Username</label>
+                            <input type="text" class="form-control" id="smtp_user" name="smtp_user" value="{{ settings.get('smtp_user', '') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="smtp_password">SMTP Password</label>
+                            <input type="password" class="form-control" id="smtp_password" name="smtp_password" value="{{ settings.get('smtp_password', '') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="smtp_use_tls">Use TLS</label>
+                            <select class="form-control" id="smtp_use_tls" name="smtp_use_tls">
+                                <option value="true" {% if settings.get('smtp_use_tls') == 'true' %}selected{% endif %}>Yes</option>
+                                <option value="false" {% if settings.get('smtp_use_tls') != 'true' %}selected{% endif %}>No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMS Placeholder -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">SMS Gateway Settings</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">SMS gateway integration settings will appear here. This feature is under development.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

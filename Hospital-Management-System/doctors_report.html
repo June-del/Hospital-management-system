@@ -1,0 +1,36 @@
+{% extends "reporting/report_base.html" %}
+
+{% block report_content %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Doctor ID</th>
+                <th>Full Name</th>
+                <th>Specialization</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doctor in report_data %}
+            <tr>
+                <td>{{ doctor.doctor_id }}</td>
+                <td>Dr. {{ doctor.first_name }} {{ doctor.last_name }}</td>
+                <td>{{ doctor.specialization }}</td>
+                <td>{{ doctor.department }}</td>
+                <td>{{ doctor.email }}</td>
+                <td>{{ doctor.phone }}</td>
+                <td><span class="badge bg-{{ 'success' if doctor.status == 'Available' else 'warning' }}">{{ doctor.status }}</span></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No doctors found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

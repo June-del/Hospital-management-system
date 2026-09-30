@@ -1,0 +1,36 @@
+{% extends "reporting/report_base.html" %}
+
+{% block report_content %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Unit</th>
+                <th>SKU</th>
+                <th>Current Stock</th>
+                <th>Reorder Level</th>
+                <th>Preferred Supplier</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in report_data %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.unit_of_measure }}</td>
+                <td>{{ product.sku or 'N/A' }}</td>
+                <td>{{ product.current_stock }}</td>
+                <td>{{ product.reorder_level }}</td>
+                <td>{{ product.preferred_supplier.company_name if product.preferred_supplier else 'N/A' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No inventory items found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

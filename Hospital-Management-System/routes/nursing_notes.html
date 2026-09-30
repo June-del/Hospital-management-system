@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('nurse_portal.add_nursing_note', patient_id=patient.id) }}">
+                <div class="form-group">
+                    <label for="note_text">Nursing Note</label>
+                    <textarea class="form-control" id="note_text" name="note_text" rows="6" required placeholder="Enter your nursing observations and care details here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="timestamp">Timestamp</label>
+                    <input type="datetime-local" class="form-control" id="timestamp" name="timestamp" value="{{ now().strftime('%Y-%m-%dT%H:%M') }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Add Note</button>
+                <a href="{{ url_for('nurse_portal.view_patient_details', patient_id=patient.id) }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

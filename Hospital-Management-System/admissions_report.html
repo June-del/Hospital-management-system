@@ -1,0 +1,40 @@
+{% extends "reporting/report_base.html" %}
+
+{% block report_content %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Admission ID</th>
+                <th>Patient Name</th>
+                <th>Patient ID</th>
+                <th>Admitting Doctor</th>
+                <th>Ward</th>
+                <th>Room</th>
+                <th>Bed</th>
+                <th>Admission Date</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for admission in report_data.items %}
+            <tr>
+                <td>{{ admission.id }}</td>
+                <td>{{ admission.patient.full_name }}</td>
+                <td>{{ admission.patient.patient_id }}</td>
+                <td>Dr. {{ admission.admitting_doctor.first_name }} {{ admission.admitting_doctor.last_name }}</td>
+                <td>{{ admission.bed.room.ward.name }}</td>
+                <td>{{ admission.bed.room.room_number }}</td>
+                <td>{{ admission.bed.bed_number }}</td>
+                <td>{{ admission.admission_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ admission.reason | truncate(50) }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" class="text-center">No admissions found for the selected period.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Statistic Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Beds</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_beds }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-bed fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Available Beds</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.available_beds }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-check-circle fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Occupied Beds</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.occupied_beds }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-user-friends fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Occupancy Rate</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {% if stats.total_beds > 0 %}
+                                    {{ "%.2f"|format((stats.occupied_beds / stats.total_beds) * 100) }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-chart-pie fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions & Ward List -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Ward Occupancy Overview</h6>
+            <a href="{{ url_for('wards.admit_patient') }}" class="btn btn-primary btn-sm"><i class="fas fa-plus-circle fa-sm text-white-50"></i> Admit Patient</a>
+        </div>
+        <div class="card-body">
+            {% for ward in wards %}
+            <h4 class="small font-weight-bold">{{ ward.name }} ({{ ward.ward_type }}) <span class="float-right">{{ ward.occupied_beds }} / {{ ward.capacity }} Beds</span></h4>
+            <div class="progress mb-4">
+                <div class="progress-bar {% if (ward.occupied_beds / ward.capacity if ward.capacity > 0 else 0) > 0.8 %}bg-danger{% elif (ward.occupied_beds / ward.capacity if ward.capacity > 0 else 0) > 0.5 %}bg-warning{% else %}bg-success{% endif %}" role="progressbar" style="width: {{ (ward.occupied_beds / ward.capacity if ward.capacity > 0 else 0) * 100 }}%" aria-valuenow="{{ ward.occupied_beds }}" aria-valuemin="0" aria-valuemax="{{ ward.capacity }}"></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

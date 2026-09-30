@@ -1,0 +1,146 @@
+/*
+ * Professional Admin Dashboard Styles
+ */
+
+:root {
+    --bs-primary-rgb: 78, 115, 223;
+    --bs-secondary-rgb: 133, 135, 150;
+    --bs-font-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-body-font-size: 0.9rem;
+    --bs-body-color: #5a5c69;
+    --bs-body-bg: #f8f9fc;
+}
+
+[data-bs-theme="dark"] {
+    --bs-body-color: #d1d2d6;
+    --bs-body-bg: #1a1c23;
+    --bs-tertiary-bg: #22252e;
+    --bs-border-color: #3b3d48;
+    --bs-card-bg: var(--bs-tertiary-bg);
+    --bs-list-group-bg: var(--bs-tertiary-bg);
+    --bs-modal-bg: var(--bs-tertiary-bg);
+    --bs-table-bg: var(--bs-tertiary-bg);
+    --bs-table-striped-bg: #2c2f3a;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+#wrapper {
+    display: flex;
+}
+
+/* Sidebar Styles */
+#sidebar-wrapper {
+    min-height: 100vh;
+    width: 250px;
+    transition: margin 0.25s ease-out;
+    background-color: #fff;
+    border-right: 1px solid #e3e6f0;
+}
+
+[data-bs-theme="dark"] #sidebar-wrapper {
+    background-color: var(--bs-tertiary-bg);
+    border-right: 1px solid var(--bs-border-color);
+}
+
+.sidebar-heading {
+    padding: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--bs-primary);
+}
+
+.list-group-item {
+    transition: all 0.2s ease-in-out;
+    border-left: 3px solid transparent;
+}
+
+.list-group-item-action {
+    font-weight: 500;
+}
+
+.list-group-item-action:hover,
+.list-group-item-action:focus {
+    color: var(--bs-primary);
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+    border-left-color: var(--bs-primary);
+}
+
+.list-group-item.active {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    color: var(--bs-primary);
+    border-left-color: var(--bs-primary);
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .list-group-item-action:hover,
+[data-bs-theme="dark"] .list-group-item-action:focus {
+    background-color: rgba(var(--bs-primary-rgb), 0.15);
+}
+
+/* Toggled Sidebar */
+.sidebar-toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+/* Page Content Wrapper */
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+.sidebar-toggled #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+    .sidebar-toggled #sidebar-wrapper {
+        margin-left: -250px;
+    }
+}
+
+/* Topbar Styles */
+.navbar {
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+[data-bs-theme="dark"] .navbar {
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(0,0,0, 0.15);
+}
+
+/* Professional Cards */
+.card {
+    border: none;
+    transition: all 0.3s;
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+.border-start-primary { border-left: 0.25rem solid var(--bs-primary) !important; }
+.border-start-success { border-left: 0.25rem solid var(--bs-success) !important; }
+.border-start-info { border-left: 0.25rem solid var(--bs-info) !important; }
+.border-start-warning { border-left: 0.25rem solid var(--bs-warning) !important; }
+.border-start-danger { border-left: 0.25rem solid var(--bs-danger) !important; }
+
+/* Login Page Background */
+.bg-login {
+    background: url('https://source.unsplash.com/random/1920x1080/?hospital,clinic') no-repeat center center;
+    background-size: cover;
+}
+
+/* Utility */
+.text-xs {
+    font-size: .7rem;
+}

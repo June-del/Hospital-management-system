@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('procurement.add_supplier') if not supplier else url_for('procurement.edit_supplier', supplier_id=supplier.id) }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="company_name">Company Name</label>
+                            <input type="text" class="form-control" id="company_name" name="company_name" value="{{ supplier.company_name if supplier else '' }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="contact_person">Contact Person</label>
+                            <input type="text" class="form-control" id="contact_person" name="contact_person" value="{{ supplier.contact_person if supplier else '' }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone" value="{{ supplier.phone if supplier else '' }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ supplier.email if supplier else '' }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea class="form-control" id="address" name="address" rows="3">{{ supplier.address if supplier else '' }}</textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tax_number">Tax Number</label>
+                            <input type="text" class="form-control" id="tax_number" name="tax_number" value="{{ supplier.tax_number if supplier else '' }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control" id="status" name="status" required>
+                                <option value="Active" {% if supplier and supplier.status == 'Active' %}selected{% endif %}>Active</option>
+                                <option value="Inactive" {% if supplier and supplier.status == 'Inactive' %}selected{% endif %}>Inactive</option>
+                                <option value="On Hold" {% if supplier and supplier.status == 'On Hold' %}selected{% endif %}>On Hold</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">
+                    {% if supplier %}
+                        Update Supplier
+                    {% else %}
+                        Add Supplier
+                    {% endif %}
+                </button>
+                <a href="{{ url_for('procurement.list_suppliers') }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

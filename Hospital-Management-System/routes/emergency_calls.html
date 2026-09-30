@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+            <a href="{{ url_for('emergency.new_emergency_call') }}" class="btn btn-danger btn-sm"><i class="fas fa-phone-plus fa-sm text-white-50"></i> Log New Call</a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Caller</th>
+                            <th>Location</th>
+                            <th>Type</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Ambulance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for call in calls %}
+                        <tr>
+                            <td>{{ call.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ call.caller_name }} ({{ call.phone }})</td>
+                            <td>{{ call.location }}</td>
+                            <td>{{ call.emergency_type }}</td>
+                            <td><span class="badge badge-{{ 'danger' if call.priority == 'High' else 'warning' }}">{{ call.priority }}</span></td>
+                            <td><span class="badge badge-{{ 'success' if call.status == 'Completed' else 'info' }}">{{ call.status }}</span></td>
+                            <td>{{ call.ambulance.vehicle_number if call.ambulance else 'N/A' }}</td>
+                            <td>
+                                {% if call.status == 'Pending' %}
+                                <a href="{{ url_for('emergency.dispatch_ambulance', call_id=call.id) }}" class="btn btn-success btn-sm">Dispatch</a>
+                                {% elif call.status == 'Dispatched' %}
+                                <form action="{{ url_for('emergency.update_call_status', call_id=call.id, new_status='Arrived') }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-info btn-sm">Mark Arrived</button>
+                                </form>
+                                {% elif call.status == 'Arrived' %}
+                                <form action="{{ url_for('emergency.update_call_status', call_id=call.id, new_status='Completed') }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-primary btn-sm">Mark Completed</button>
+                                </form>
+                                {% endif %}
+                                {% if call.status in ['Pending', 'Dispatched'] %}
+                                <form action="{{ url_for('emergency.update_call_status', call_id=call.id, new_status='Cancelled') }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to cancel this call?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">No emergency calls found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

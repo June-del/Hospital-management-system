@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Medical Record Details</h2>
+                <p class="text-muted mb-0">Clinical summary and visit history for {{ record.patient.full_name }}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('emr.edit_emr', record_id=record.id) }}" class="btn btn-outline-warning"><i class="fas fa-edit me-1"></i>Edit</a>
+                <a href="{{ url_for('emr.print_emr', record_id=record.id) }}" class="btn btn-outline-secondary" target="_blank"><i class="fas fa-print me-1"></i>Print</a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="p-4 rounded-4 bg-light border">
+                    <h5 class="fw-semibold mb-3">Patient & Visit</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Patient</dt>
+                        <dd class="col-sm-8">{{ record.patient.full_name }}</dd>
+                        <dt class="col-sm-4">Doctor</dt>
+                        <dd class="col-sm-8">{{ record.doctor.first_name }} {{ record.doctor.last_name }}</dd>
+                        <dt class="col-sm-4">Visit Date</dt>
+                        <dd class="col-sm-8">{{ record.visit_date.strftime('%Y-%m-%d') }}</dd>
+                        <dt class="col-sm-4">Follow-up</dt>
+                        <dd class="col-sm-8">{{ record.follow_up_date.strftime('%Y-%m-%d') if record.follow_up_date else 'Not scheduled' }}</dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="p-4 rounded-4 border">
+                    <h5 class="fw-semibold mb-3">Vitals</h5>
+                    <p class="mb-1"><strong>Temp:</strong> {{ record.temperature or 'N/A' }}</p>
+                    <p class="mb-1"><strong>BP:</strong> {{ record.blood_pressure or 'N/A' }}</p>
+                    <p class="mb-1"><strong>Pulse:</strong> {{ record.pulse_rate or 'N/A' }}</p>
+                    <p class="mb-1"><strong>Resp:</strong> {{ record.respiratory_rate or 'N/A' }}</p>
+                    <p class="mb-1"><strong>Weight:</strong> {{ record.weight or 'N/A' }}</p>
+                    <p class="mb-1"><strong>Height:</strong> {{ record.height or 'N/A' }}</p>
+                    <p class="mb-1"><strong>BMI:</strong> {{ record.bmi or 'N/A' }}</p>
+                    <p class="mb-0"><strong>O2 Sat:</strong> {{ record.oxygen_saturation or 'N/A' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-12">
+                <div class="p-4 rounded-4 border">
+                    <h5 class="fw-semibold mb-3">Clinical Information</h5>
+                    <p><strong>Chief Complaint:</strong> {{ record.chief_complaint }}</p>
+                    <p><strong>Symptoms:</strong> {{ record.symptoms or 'Not provided' }}</p>
+                    <p><strong>Medical History:</strong> {{ record.medical_history or 'Not provided' }}</p>
+                    <p><strong>Allergies:</strong> {{ record.allergies or 'None reported' }}</p>
+                    <p><strong>Physical Examination:</strong> {{ record.physical_examination or 'Not provided' }}</p>
+                    <p><strong>Diagnosis:</strong> {{ record.diagnosis or 'Pending' }}</p>
+                    <p><strong>Treatment Plan:</strong> {{ record.treatment_plan or 'Not provided' }}</p>
+                    <p><strong>Prescription:</strong> {{ record.prescription or 'Not provided' }}</p>
+                    <p><strong>Lab Tests Requested:</strong> {{ record.lab_tests_requested or 'None' }}</p>
+                    <p><strong>Imaging Requested:</strong> {{ record.imaging_requested or 'None' }}</p>
+                    <p><strong>Clinical Notes:</strong> {{ record.clinical_notes or 'No additional notes.' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h5 class="fw-semibold mb-3">Previous Visits</h5>
+            <ul class="list-group">
+                {% for visit in previous_visits %}
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ visit.visit_date.strftime('%Y-%m-%d') }} - {{ visit.chief_complaint }}</span>
+                        <a href="{{ url_for('emr.view_emr', record_id=visit.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                    </div>
+                </li>
+                {% else %}
+                <li class="list-group-item text-muted">No previous visits recorded.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

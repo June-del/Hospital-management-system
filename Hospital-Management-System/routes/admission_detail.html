@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+            <div>
+                {% if not admission.discharge_date %}
+                <a href="{{ url_for('wards.transfer_patient', admission_id=admission.id) }}" class="btn btn-warning btn-sm">
+                    <i class="fas fa-random fa-sm text-white-50"></i> Transfer Patient
+                </a>
+                <form method="POST" action="{{ url_for('wards.discharge_patient', admission_id=admission.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to discharge this patient?');">
+                    <button type="submit" class="btn btn-success btn-sm">
+                        <i class="fas fa-check-circle fa-sm text-white-50"></i> Discharge Patient
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Patient Information</h5>
+                    <hr>
+                    <p><strong>Patient Name:</strong> <a href="{{ url_for('patients.patient_profile', patient_id=admission.patient.id) }}">{{ admission.patient.full_name }}</a></p>
+                    <p><strong>Patient ID:</strong> {{ admission.patient.patient_id }}</p>
+                    <p><strong>Gender:</strong> {{ admission.patient.gender }}</p>
+                    <p><strong>Date of Birth:</strong> {{ admission.patient.date_of_birth.strftime('%d %b %Y') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Admission Details</h5>
+                    <hr>
+                    <p><strong>Admission ID:</strong> ADM-{{ admission.id }}</p>
+                    <p><strong>Admission Date:</strong> {{ admission.admission_date.strftime('%d %b %Y %I:%M %p') }}</p>
+                    <p><strong>Discharge Date:</strong> 
+                        {% if admission.discharge_date %}
+                            <span class="badge badge-success">{{ admission.discharge_date.strftime('%d %b %Y %I:%M %p') }}</span>
+                        {% else %}
+                            <span class="badge badge-info">Currently Admitted</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Admitting Doctor:</strong> Dr. {{ admission.admitting_doctor.first_name }} {{ admission.admitting_doctor.last_name }}</p>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h5>Bed Information</h5>
+                    <hr>
+                    <p><strong>Ward:</strong> {{ admission.bed.room.ward.name }} ({{ admission.bed.room.ward.ward_type }})</p>
+                    <p><strong>Room:</strong> {{ admission.bed.room.room_number }}</p>
+                    <p><strong>Bed Number:</strong> {{ admission.bed.bed_number }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Clinical Information</h5>
+                    <hr>
+                    <p><strong>Reason for Admission:</strong></p>
+                    <p>{{ admission.reason or 'N/A' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('emergency.new_emergency_call') }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="caller_name">Caller Name</label>
+                            <input type="text" class="form-control" id="caller_name" name="caller_name" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="phone">Caller Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <textarea class="form-control" id="location" name="location" rows="3" required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="emergency_type">Emergency Type</label>
+                            <select class="form-control" id="emergency_type" name="emergency_type" required>
+                                <option value="">Select Type...</option>
+                                <option value="Medical">Medical</option>
+                                <option value="Accident/Trauma">Accident/Trauma</option>
+                                <option value="Maternity">Maternity</option>
+                                <option value="Transfer">Patient Transfer</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="priority">Priority</label>
+                            <select class="form-control" id="priority" name="priority" required>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-danger mt-3">Log Call</button>
+                <a href="{{ url_for('emergency.list_emergency_calls') }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

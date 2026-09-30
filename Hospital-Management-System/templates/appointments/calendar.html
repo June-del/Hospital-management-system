@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Appointment Calendar</h2>
+                <p class="text-muted mb-0">Monthly view of scheduled appointments by date.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" href="{{ url_for('appointments.appointment_calendar', month=(prev_year ~ '-' ~ '%02d'|format(prev_month))) }}">Previous</a>
+                <a class="btn btn-outline-secondary" href="{{ url_for('appointments.appointment_calendar', month=(next_year ~ '-' ~ '%02d'|format(next_month))) }}">Next</a>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            {% for day in days %}
+            <div class="col">
+                <div class="border rounded-4 p-3 h-100">
+                    <div class="fw-semibold mb-2">{{ day.strftime('%Y-%m-%d') }}</div>
+                    {% set day_appointments = appointments_by_day.get(day.date(), []) %}
+                    {% if day_appointments %}
+                        {% for appointment in day_appointments %}
+                        <div class="small rounded-3 bg-light p-2 mb-2">
+                            <div class="fw-semibold">{{ appointment.appointment_time }} - {{ appointment.patient.full_name }}</div>
+                            <div class="text-muted">{{ appointment.doctor.first_name }} {{ appointment.doctor.last_name }}</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-muted small">No appointments</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

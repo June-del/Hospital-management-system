@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Human Resources Dashboard</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-user-plus fa-sm text-white-50"></i> Add New Employee</a>
+    </div>
+
+    <!-- Statistic Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Employees</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_employees }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-users fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Doctors</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.doctors }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-user-md fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Nurses</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.nurses }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-user-nurse fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Staff On Leave</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.staff_on_leave }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-plane-departure fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links & Recent Hires -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Hires</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Employee Number</th>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Department</th>
+                                    <th>Employment Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emp in recent_hires %}
+                                <tr>
+                                    <td>{{ emp.employee_number }}</td>
+                                    <td>{{ emp.first_name }} {{ emp.last_name }}</td>
+                                    <td>{{ emp.position }}</td>
+                                    <td>{{ emp.department.name if emp.department else 'N/A' }}</td>
+                                    <td>{{ emp.employment_date.strftime('%d %b %Y') }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No recent hires found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "reporting/report_base.html" %}
+
+{% block report_content %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Test Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+                <th>Invoice ID</th>
+                <th>Patient Name</th>
+                <th>Invoice Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in report_data.items %}
+            <tr>
+                <td>{{ item.item_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ "%.2f"|format(item.unit_price) }}</td>
+                <td>${{ "%.2f"|format(item.total) }}</td>
+                <td>{{ item.invoice_id }}</td>
+                <td>{{ item.invoice.patient.full_name }}</td>
+                <td>{{ item.invoice.invoice_date.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No laboratory services found for the selected period.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

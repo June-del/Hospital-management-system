@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+            <button class="btn btn-primary btn-sm" disabled><i class="fas fa-plus fa-sm text-white-50"></i> Add New Role</button>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">User roles are currently defined statically within the application. A dynamic role-based access control (RBAC) system is a future enhancement.</p>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Role Name</th>
+                            <th>Users with this Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for role, count in roles_with_counts.items() %}
+                        <tr>
+                            <td>{{ role }}</td>
+                            <td>{{ count }}</td>
+                            <td>
+                                <button class="btn btn-info btn-sm" disabled>View Permissions</button>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center">No roles found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

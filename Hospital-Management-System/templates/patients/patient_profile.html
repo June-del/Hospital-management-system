@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body text-center p-4">
+                {% if patient.photo_filename %}
+                    <img src="{{ url_for('patients.uploaded_file', filename=patient.photo_filename) }}" class="rounded-circle mb-3" width="140" height="140" style="object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mb-3" style="width: 140px; height: 140px; margin: 0 auto;">
+                        <i class="fas fa-user fa-3x text-muted"></i>
+                    </div>
+                {% endif %}
+                <h4 class="fw-bold">{{ patient.full_name }}</h4>
+                <p class="text-muted mb-0">{{ patient.patient_id }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold mb-1">Patient Profile</h3>
+                        <p class="text-muted mb-0">Personal and medical details</p>
+                    </div>
+                    <a href="{{ url_for('patients.edit_patient', patient_id=patient.id) }}" class="btn btn-warning">Edit</a>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6"><strong>Gender:</strong> {{ patient.gender }}</div>
+                    <div class="col-md-6"><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</div>
+                    <div class="col-md-6"><strong>Blood Group:</strong> {{ patient.blood_group }}</div>
+                    <div class="col-md-6"><strong>Phone:</strong> {{ patient.phone }}</div>
+                    <div class="col-md-6"><strong>Email:</strong> {{ patient.email }}</div>
+                    <div class="col-md-6"><strong>Insurance Provider:</strong> {{ patient.insurance_provider }}</div>
+                    <div class="col-md-12"><strong>Address:</strong> {{ patient.address }}</div>
+                    <div class="col-md-6"><strong>Emergency Contact:</strong> {{ patient.emergency_contact }}</div>
+                    <div class="col-md-6"><strong>Next of Kin:</strong> {{ patient.next_of_kin }}</div>
+                    <div class="col-md-6"><strong>Allergies:</strong> {{ patient.allergies or 'None' }}</div>
+                    <div class="col-md-6"><strong>Medical Conditions:</strong> {{ patient.medical_conditions or 'None' }}</div>
+                    <div class="col-md-6"><strong>Registration Date:</strong> {{ patient.registration_date.strftime('%Y-%m-%d') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+            <div>
+                <a href="{{ url_for('doctor_portal.create_medical_record', patient_id=patient.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-plus fa-sm text-white-50"></i> New EMR</a>
+                <a href="{{ url_for('doctor_portal.request_radiology', patient_id=patient.id) }}" class="btn btn-info btn-sm"><i class="fas fa-x-ray fa-sm text-white-50"></i> Request Radiology</a>
+                <a href="#" class="btn btn-warning btn-sm"><i class="fas fa-flask fa-sm text-white-50"></i> Request Lab Test</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Patient Details</h5>
+                    <hr>
+                    <p><strong>Name:</strong> {{ patient.full_name }}</p>
+                    <p><strong>Patient ID:</strong> {{ patient.patient_id }}</p>
+                    <p><strong>DOB:</strong> {{ patient.date_of_birth.strftime('%d %b %Y') }}</p>
+                    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+                    <p><strong>Blood Group:</strong> {{ patient.blood_group }}</p>
+                    <p><strong>Phone:</strong> {{ patient.phone }}</p>
+                    <p><strong>Email:</strong> {{ patient.email }}</p>
+                    <p><strong>Allergies:</strong> {{ patient.allergies or 'N/A' }}</p>
+                    <p><strong>Medical Conditions:</strong> {{ patient.medical_conditions or 'N/A' }}</p>
+                </div>
+                <div class="col-md-8">
+                    <h5>Medical Records</h5>
+                    <hr>
+                    {% if medical_records %}
+                        <div class="list-group">
+                            {% for record in medical_records %}
+                            <a href="{{ url_for('emr.view_emr', record_id=record.id) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Visit on {{ record.visit_date.strftime('%d %b %Y') }}</h5>
+                                    <small>Dr. {{ record.doctor.last_name }}</small>
+                                </div>
+                                <p class="mb-1"><strong>Chief Complaint:</strong> {{ record.chief_complaint|truncate(100) }}</p>
+                                <small>Diagnosis: {{ record.diagnosis|truncate(100) or 'N/A' }}</small>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No medical records found for this patient.</p>
+                    {% endif %}
+
+                    <h5 class="mt-4">Appointments</h5>
+                    <hr>
+                    {% if appointments %}
+                        <div class="list-group">
+                            {% for appt in appointments %}
+                            <a href="{{ url_for('appointments.appointment_details', appointment_id=appt.id) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Appointment on {{ appt.appointment_date.strftime('%d %b %Y') }} at {{ appt.appointment_time }}</h5>
+                                    <small class="text-muted">{{ appt.status }}</small>
+                                </div>
+                                <p class="mb-1"><strong>Reason:</strong> {{ appt.symptoms|truncate(100) }}</p>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No appointments found for this patient with you.</p>
+                    {% endif %}
+
+                    <h5 class="mt-4">Laboratory Results</h5>
+                    <hr>
+                    {% if lab_results %}
+                        <!-- Display lab results here -->
+                        <p>Lab results will be displayed here.</p>
+                    {% else %}
+                        <p>No lab results found for this patient.</p>
+                    {% endif %}
+
+                    <h5 class="mt-4">Radiology Reports</h5>
+                    <hr>
+                    {% if radiology_reports %}
+                        <div class="list-group">
+                            {% for report in radiology_reports %}
+                            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ report.service.name }} - {{ report.requested_date.strftime('%d %b %Y') }}</h5>
+                                    <small class="text-muted">{{ report.status }}</small>
+                                </div>
+                                <p class="mb-1"><strong>Request #:</strong> {{ report.request_number }}</p>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No radiology reports found for this patient.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

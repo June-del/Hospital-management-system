@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <!-- Search and Filter Form -->
+            <form method="get" action="{{ url_for('security_audit.list_security_events') }}" class="mb-4">
+                <div class="form-row">
+                    <div class="col-md-5 mb-3">
+                        <input type="text" name="search" class="form-control" placeholder="Search by user, IP, details..." value="{{ search or '' }}">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <select name="event_type" class="form-control">
+                            <option value="">Filter by Event Type</option>
+                            {% for et in event_types %}
+                            <option value="{{ et }}" {% if event_type == et %}selected{% endif %}>{{ et }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button type="submit" class="btn btn-primary btn-block">Filter</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Event Type</th>
+                            <th>User</th>
+                            <th>IP Address</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td>{{ event.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td>{{ event.event_type }}</td>
+                            <td>{{ event.user.username if event.user else 'N/A' }}</td>
+                            <td>{{ event.ip_address or 'N/A' }}</td>
+                            <td>{{ event.details | truncate(100) or 'N/A' }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No security events found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if pagination.has_prev %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for('security_audit.list_security_events', page=pagination.prev_num, search=search, event_type=event_type) }}">Previous</a></li>
+                    {% endif %}
+                    {% for p in pagination.iter_pages() %}
+                        {% if p %}
+                            <li class="page-item {% if p == pagination.page %}active{% endif %}"><a class="page-link" href="{{ url_for('security_audit.list_security_events', page=p, search=search, event_type=event_type) }}">{{ p }}</a></li>
+                        {% else %}
+                            <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if pagination.has_next %}
+                    <li class="page-item"><a class="page-link" href="{{ url_for('security_audit.list_security_events', page=pagination.next_num, search=search, event_type=event_type) }}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}

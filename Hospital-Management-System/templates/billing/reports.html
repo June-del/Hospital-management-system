@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Billing Reports</h2>
+                <p class="text-muted mb-0">Simple financial summaries and trends.</p>
+            </div>
+            <a href="{{ url_for('billing.billing_dashboard') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back</a>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card border-0 bg-light h-100">
+                    <div class="card-body">
+                        <h6 class="fw-semibold">Daily Payments</h6>
+                        <ul class="mb-0">
+                            {% for label, value in daily %}
+                            <li>{{ label }}: {{ value }}</li>
+                            {% else %}
+                            <li>No data available.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 bg-light h-100">
+                    <div class="card-body">
+                        <h6 class="fw-semibold">Weekly Payments</h6>
+                        <ul class="mb-0">
+                            {% for label, value in weekly %}
+                            <li>{{ label }}: {{ value }}</li>
+                            {% else %}
+                            <li>No data available.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 bg-light h-100">
+                    <div class="card-body">
+                        <h6 class="fw-semibold">Monthly Payments</h6>
+                        <ul class="mb-0">
+                            {% for label, value in monthly %}
+                            <li>{{ label }}: {{ value }}</li>
+                            {% else %}
+                            <li>No data available.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <h2 class="fw-bold mb-3">Receipt PDF Preview</h2>
+        <p><strong>Payment ID:</strong> {{ payment.id }}</p>
+        <p><strong>Invoice:</strong> {{ payment.invoice.id }}</p>
+        <p><strong>Amount:</strong> {{ payment.amount_paid }}</p>
+    </div>
+</div>
+{% endblock %}

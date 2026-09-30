@@ -1,0 +1,38 @@
+{% extends "reporting/report_base.html" %}
+
+{% block report_content %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Appointment ID</th>
+                <th>Patient Name</th>
+                <th>Doctor Name</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Symptoms</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appt in report_data.items %}
+            <tr>
+                <td>{{ appt.id }}</td>
+                <td>{{ appt.patient.full_name }}</td>
+                <td>Dr. {{ appt.doctor.first_name }} {{ appt.doctor.last_name }}</td>
+                <td>{{ appt.appointment_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ appt.appointment_time }}</td>
+                <td>{{ appt.department }}</td>
+                <td><span class="badge bg-info">{{ appt.status }}</span></td>
+                <td>{{ appt.symptoms | truncate(50) }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center">No appointments found for the selected period.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('emergency.add_ambulance') if not ambulance else url_for('emergency.edit_ambulance', ambulance_id=ambulance.id) }}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="vehicle_number">Vehicle Number / Name</label>
+                            <input type="text" class="form-control" id="vehicle_number" name="vehicle_number" value="{{ ambulance.vehicle_number if ambulance else '' }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="registration_number">Registration Number</label>
+                            <input type="text" class="form-control" id="registration_number" name="registration_number" value="{{ ambulance.registration_number if ambulance else '' }}" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="driver_id">Assigned Driver</label>
+                            <select class="form-control" id="driver_id" name="driver_id">
+                                <option value="">None</option>
+                                {% for driver in drivers %}
+                                <option value="{{ driver.id }}" {% if ambulance and ambulance.driver_id == driver.id %}selected{% endif %}>
+                                    {{ driver.first_name }} {{ driver.last_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="capacity">Capacity</label>
+                            <input type="number" class="form-control" id="capacity" name="capacity" value="{{ ambulance.capacity if ambulance else '1' }}" min="1" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="equipment">Equipment (comma-separated)</label>
+                    <textarea class="form-control" id="equipment" name="equipment" rows="3">{{ ambulance.equipment if ambulance else '' }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select class="form-control" id="status" name="status" required>
+                        <option value="Available" {% if ambulance and ambulance.status == 'Available' %}selected{% endif %}>Available</option>
+                        <option value="On Duty" {% if ambulance and ambulance.status == 'On Duty' %}selected{% endif %}>On Duty</option>
+                        <option value="Maintenance" {% if ambulance and ambulance.status == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">
+                    {% if ambulance %}
+                        Update Ambulance
+                    {% else %}
+                        Add Ambulance
+                    {% endif %}
+                </button>
+                <a href="{{ url_for('emergency.list_ambulances') }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

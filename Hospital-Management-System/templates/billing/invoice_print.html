@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <h2 class="fw-bold mb-3">Invoice #{{ invoice.id }}</h2>
+        <p><strong>Patient:</strong> {{ invoice.patient.full_name }}</p>
+        <p><strong>Date:</strong> {{ invoice.invoice_date.strftime('%Y-%m-%d') }}</p>
+        <p><strong>Status:</strong> {{ invoice.status }}</p>
+        <hr>
+        <table class="table table-bordered">
+            <thead><tr><th>Item</th><th>Category</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+            <tbody>
+                {% for item in invoice.items %}
+                <tr><td>{{ item.item_name }}</td><td>{{ item.category }}</td><td>{{ item.quantity }}</td><td>{{ item.unit_price }}</td><td>{{ item.total }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="text-end fw-bold">Final Amount: {{ invoice.final_amount }}</p>
+    </div>
+</div>
+{% endblock %}

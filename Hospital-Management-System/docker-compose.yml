@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: hospital_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: hospital_web
+    command: gunicorn --bind 0.0.0.0:5000 --workers 4 app:app
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - SECRET_KEY=${SECRET_KEY}
+      - FLASK_APP=app.py
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+# Note: This setup does not include Nginx. For a full production setup,
+# you would add an Nginx service here to act as a reverse proxy,
+# handle SSL termination, and serve static files directly.

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Appointment Details</h2>
+                <p class="text-muted mb-0">Detailed information for appointment #{{ appointment.id }}</p>
+            </div>
+            <a href="{{ url_for('appointments.appointments_index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back</a>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="p-4 rounded-4 bg-light border">
+                    <h5 class="fw-semibold mb-3">Appointment Overview</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Patient</dt>
+                        <dd class="col-sm-8">{{ appointment.patient.full_name }}</dd>
+                        <dt class="col-sm-4">Doctor</dt>
+                        <dd class="col-sm-8">{{ appointment.doctor.first_name }} {{ appointment.doctor.last_name }}</dd>
+                        <dt class="col-sm-4">Department</dt>
+                        <dd class="col-sm-8">{{ appointment.department }}</dd>
+                        <dt class="col-sm-4">Date & Time</dt>
+                        <dd class="col-sm-8">{{ appointment.appointment_date.strftime('%Y-%m-%d') }} at {{ appointment.appointment_time }}</dd>
+                        <dt class="col-sm-4">Queue</dt>
+                        <dd class="col-sm-8">#{{ appointment.queue_number }}</dd>
+                        <dt class="col-sm-4">Visit Type</dt>
+                        <dd class="col-sm-8">{{ appointment.visit_type }}</dd>
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8"><span class="badge bg-info text-dark">{{ appointment.status }}</span></dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="p-4 rounded-4 border">
+                    <h5 class="fw-semibold mb-3">Symptoms & Notes</h5>
+                    <p class="mb-3"><strong>Symptoms:</strong> {{ appointment.symptoms }}</p>
+                    <p class="mb-0"><strong>Notes:</strong> {{ appointment.notes or 'No additional notes.' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

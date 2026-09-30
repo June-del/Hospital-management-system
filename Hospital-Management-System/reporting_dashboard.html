@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="reportsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-file-alt me-2"></i> View Reports
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="reportsDropdown">
+                <li><h6 class="dropdown-header">Operational Reports</h6></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='admissions') }}">Admissions Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='discharges') }}">Discharges Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='appointments') }}">Appointments Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='patients') }}">Patients Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='doctors') }}">Doctors Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='bed_occupancy') }}">Bed Occupancy Report</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">Clinical Reports</h6></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='top_diseases') }}">Top Diseases Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='medicine_consumption') }}">Medicine Consumption</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">Financial & Inventory</h6></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='revenue') }}">Revenue Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='pharmacy') }}">Pharmacy Sales Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='laboratory') }}">Laboratory Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='radiology') }}">Radiology Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='inventory') }}">Inventory Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='payroll') }}">Payroll Report</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('reporting.view_report', report_name='financial_summary') }}">Financial Summary</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Monthly Admissions</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ kpis.monthly_admissions }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-user-plus fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Monthly Discharges</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ kpis.monthly_discharges }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-door-open fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Monthly Revenue</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ kpis.monthly_revenue }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Monthly Appointments</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ kpis.monthly_appointments }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-calendar-check fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-chart-line me-2"></i>Monthly Trends</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthlyTrendsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    fetch("{{ url_for('reporting.monthly_trends_data') }}")
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('monthlyTrendsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Admissions',
+                            data: data.admissions,
+                            borderColor: 'rgba(78, 115, 223, 1)',
+                            backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Discharges',
+                            data: data.discharges,
+                            borderColor: 'rgba(28, 200, 138, 1)',
+                            backgroundColor: 'rgba(28, 200, 138, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Revenue ($)',
+                            data: data.revenue,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Appointments',
+                            data: data.appointments,
+                            borderColor: 'rgba(246, 194, 62, 1)',
+                            backgroundColor: 'rgba(246, 194, 62, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching monthly trends data:', error));
+});
+</script>
+{% endblock %}

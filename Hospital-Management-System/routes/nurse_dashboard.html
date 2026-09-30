@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Nurse Portal Dashboard</h1>
+        <a href="{{ url_for('nurse_portal.assigned_patients') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-users fa-sm text-white-50"></i> View Assigned Patients</a>
+    </div>
+
+    <!-- Statistic Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Assigned Patients</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ assigned_patients|length }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-bed fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Today's Admissions</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ today_admissions|length }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-hospital-user fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Today's Discharges</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ today_discharges|length }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-door-open fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Tasks</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ today_tasks|length }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-tasks fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Admissions -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Today's Admissions</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Ward</th>
+                            <th>Bed</th>
+                            <th>Admitting Doctor</th>
+                            <th>Admission Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for admission in today_admissions %}
+                        <tr>
+                            <td><a href="{{ url_for('nurse_portal.view_patient_details', patient_id=admission.patient.id) }}">{{ admission.patient.full_name }}</a></td>
+                            <td>{{ admission.bed.room.ward.name }}</td>
+                            <td>{{ admission.bed.bed_number }}</td>
+                            <td>Dr. {{ admission.admitting_doctor.last_name }}</td>
+                            <td>{{ admission.admission_date.strftime('%H:%M') }}</td>
+                            <td>
+                                <a href="{{ url_for('nurse_portal.record_vitals', patient_id=admission.patient.id) }}" class="btn btn-sm btn-info">Vitals</a>
+                                <a href="{{ url_for('nurse_portal.administer_medication', patient_id=admission.patient.id) }}" class="btn btn-sm btn-warning">Meds</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No admissions today.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Discharges -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-info">Today's Discharges</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Ward</th>
+                            <th>Bed</th>
+                            <th>Discharge Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for admission in today_discharges %}
+                        <tr>
+                            <td><a href="{{ url_for('nurse_portal.view_patient_details', patient_id=admission.patient.id) }}">{{ admission.patient.full_name }}</a></td>
+                            <td>{{ admission.bed.room.ward.name }}</td>
+                            <td>{{ admission.bed.bed_number }}</td>
+                            <td>{{ admission.discharge_date.strftime('%H:%M') }}</td>
+                            <td>
+                                <a href="{{ url_for('nurse_portal.view_patient_details', patient_id=admission.patient.id) }}" class="btn btn-sm btn-primary">View Summary</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No discharges today.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

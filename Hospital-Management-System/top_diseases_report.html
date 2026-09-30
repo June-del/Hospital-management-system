@@ -1,0 +1,28 @@
+{% extends "reporting/report_base.html" %}
+
+{% block report_content %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Diagnosis</th>
+                <th>Number of Cases</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for diagnosis in report_data %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ diagnosis.diagnosis }}</td>
+                <td>{{ diagnosis.diagnosis_count }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" class="text-center">No disease data found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

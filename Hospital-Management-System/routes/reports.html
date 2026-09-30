@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <p>This page will display various procurement reports.</p>
+            <p>Reports to be implemented:</p>
+            <ul>
+                <li>Purchase Report (by date, supplier, category)</li>
+                <li>Supplier Performance Report</li>
+                <li>Procurement Cost Report</li>
+                <li>Delivery Performance Report</li>
+            </ul>
+            <a href="{{ url_for('procurement.dashboard') }}" class="btn btn-primary mt-3">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

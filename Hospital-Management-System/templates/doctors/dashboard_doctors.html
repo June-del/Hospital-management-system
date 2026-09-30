@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-2">Total Doctors</h4>
+                <p class="display-4 fw-bold text-primary mb-0">{{ total_doctors }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-2">Available Today</h4>
+                <p class="display-4 fw-bold text-success mb-0">{{ available_doctors }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-2">On Leave</h4>
+                <p class="display-4 fw-bold text-warning mb-0">{{ on_leave_doctors }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

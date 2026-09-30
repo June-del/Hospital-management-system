@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+            <a href="{{ url_for('emergency.add_ambulance') }}" class="btn btn-primary btn-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Add Ambulance</a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Vehicle Number</th>
+                            <th>Registration #</th>
+                            <th>Assigned Driver</th>
+                            <th>Capacity</th>
+                            <th>Status</th>
+                            <th>Equipment</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ambulance in ambulances %}
+                        <tr>
+                            <td>{{ ambulance.vehicle_number }}</td>
+                            <td>{{ ambulance.registration_number }}</td>
+                            <td>{{ ambulance.driver.first_name ~ ' ' ~ ambulance.driver.last_name if ambulance.driver else 'N/A' }}</td>
+                            <td>{{ ambulance.capacity }}</td>
+                            <td>
+                                <span class="badge badge-{{ 'success' if ambulance.status == 'Available' else 'danger' if ambulance.status == 'Maintenance' else 'info' }}">
+                                    {{ ambulance.status }}
+                                </span>
+                            </td>
+                            <td>{{ ambulance.equipment | truncate(50) }}</td>
+                            <td>
+                                <a href="{{ url_for('emergency.edit_ambulance', ambulance_id=ambulance.id) }}" class="btn btn-warning btn-sm btn-circle" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <!-- Delete form can be added here -->
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">No ambulances found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

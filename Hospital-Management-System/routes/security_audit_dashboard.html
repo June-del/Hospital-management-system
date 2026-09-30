@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
+        <a href="{{ url_for('security_audit.list_audit_logs') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-clipboard-list fa-sm text-white-50"></i> View All Logs</a>
+    </div>
+
+    <!-- Statistic Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Audit Logs</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_audit_logs }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-history fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Locked Accounts</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.locked_accounts }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-lock fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Failed Logins (24h)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.failed_logins_24h }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Security Events</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total_security_events }}</div>
+                        </div>
+                        <div class="col-auto"><i class="fas fa-shield-alt fa-2x text-gray-300"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Audit Logs and Security Events -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Audit Logs</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for log in recent_audit_logs %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ log.action }} - {{ log.entity_type }} (ID: {{ log.entity_id or 'N/A' }})</h6>
+                                <small>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <p class="mb-1">User: {{ log.user.username if log.user else 'System' }}</p>
+                            <small>{{ log.details | truncate(100) }}</small>
+                        </div>
+                        {% else %}
+                        <p class="text-center">No recent audit logs.</p>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('security_audit.list_audit_logs') }}">View All Audit Logs &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">Recent Security Events</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for event in recent_security_events %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ event.event_type }}</h6>
+                                <small>{{ event.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <p class="mb-1">User: {{ event.user.username if event.user else 'N/A' }} (IP: {{ event.ip_address or 'N/A' }})</p>
+                            <small>{{ event.details | truncate(100) }}</small>
+                        </div>
+                        {% else %}
+                        <p class="text-center">No recent security events.</p>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('security_audit.list_security_events') }}">View All Security Events &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

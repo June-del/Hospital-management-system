@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">{{ title }}</h2>
+                <p class="text-muted mb-0">Create or update invoices with one or more items.</p>
+            </div>
+            <a href="{{ url_for('billing.billing_index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back</a>
+        </div>
+
+        <form method="post" class="row g-3">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="col-md-6">
+                <label class="form-label">Patient</label>
+                <select class="form-select" name="patient_id" required>
+                    <option value="">Select patient</option>
+                    {% for patient in patients %}
+                    <option value="{{ patient.id }}" {% if invoice and invoice.patient_id == patient.id %}selected{% endif %}>{{ patient.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Appointment</label>
+                <select class="form-select" name="appointment_id">
+                    <option value="">Optional</option>
+                    {% for appointment in appointments %}
+                    <option value="{{ appointment.id }}" {% if invoice and invoice.appointment_id == appointment.id %}selected{% endif %}>{{ appointment.patient.full_name }} - {{ appointment.appointment_date }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Invoice Date</label>
+                <input type="date" class="form-control" name="invoice_date" value="{{ invoice.invoice_date.strftime('%Y-%m-%d') if invoice else '' }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Due Date</label>
+                <input type="date" class="form-control" name="due_date" value="{{ invoice.due_date.strftime('%Y-%m-%d') if invoice and invoice.due_date else '' }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select class="form-select" name="status">
+                    {% for status_name in statuses %}
+                    <option value="{{ status_name }}" {% if invoice and invoice.status == status_name %}selected{% endif %}>{{ status_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Discount</label>
+                <input type="number" class="form-control" name="discount" value="{{ invoice.discount if invoice else 0 }}" step="0.01">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Tax</label>
+                <input type="number" class="form-control" name="tax" value="{{ invoice.tax if invoice else 0 }}" step="0.01">
+            </div>
+            <div class="col-12">
+                <label class="form-label">Notes</label>
+                <textarea class="form-control" name="notes" rows="3">{{ invoice.notes if invoice else '' }}</textarea>
+            </div>
+
+            <div class="col-12">
+                <h5 class="fw-semibold mt-2">Invoice Items</h5>
+                <div id="items-container">
+                    {% if invoice %}
+                        {% for item in invoice.items %}
+                        <div class="row g-2 align-items-end mt-2">
+                            <div class="col-md-4"><input type="text" class="form-control" name="item_name" value="{{ item.item_name }}"></div>
+                            <div class="col-md-3"><select class="form-select" name="category"><option value="{{ item.category }}">{{ item.category }}</option>{% for category in categories %}<option value="{{ category }}">{{ category }}</option>{% endfor %}</select></div>
+                            <div class="col-md-2"><input type="number" class="form-control" name="quantity" value="{{ item.quantity }}"></div>
+                            <div class="col-md-2"><input type="number" class="form-control" name="unit_price" value="{{ item.unit_price }}" step="0.01"></div>
+                            <div class="col-md-1"><button type="button" class="btn btn-outline-danger btn-sm" onclick="this.parentElement.parentElement.remove()"><i class="fas fa-trash"></i></button></div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="row g-2 align-items-end mt-2">
+                            <div class="col-md-4"><input type="text" class="form-control" name="item_name" placeholder="Item name"></div>
+                            <div class="col-md-3"><select class="form-select" name="category">{% for category in categories %}<option value="{{ category }}">{{ category }}</option>{% endfor %}</select></div>
+                            <div class="col-md-2"><input type="number" class="form-control" name="quantity" value="1"></div>
+                            <div class="col-md-2"><input type="number" class="form-control" name="unit_price" step="0.01" value="0"></div>
+                        </div>
+                    {% endif %}
+                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm mt-3" onclick="addItemRow()"><i class="fas fa-plus me-1"></i>Add Item</button>
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary" type="submit"><i class="fas fa-save me-1"></i>Save Invoice</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function addItemRow() {
+    const container = document.getElementById('items-container');
+    const row = document.createElement('div');
+    row.className = 'row g-2 align-items-end mt-2';
+    row.innerHTML = `
+        <div class="col-md-4"><input type="text" class="form-control" name="item_name" placeholder="Item name"></div>
+        <div class="col-md-3"><select class="form-select" name="category">{% for category in categories %}<option value="{{ category }}">{{ category }}</option>{% endfor %}</select></div>
+        <div class="col-md-2"><input type="number" class="form-control" name="quantity" value="1"></div>
+        <div class="col-md-2"><input type="number" class="form-control" name="unit_price" step="0.01" value="0"></div>
+        <div class="col-md-1"><button type="button" class="btn btn-outline-danger btn-sm" onclick="this.parentElement.parentElement.remove()"><i class="fas fa-trash"></i></button></div>`;
+    container.appendChild(row);
+}
+</script>
+{% endblock %}

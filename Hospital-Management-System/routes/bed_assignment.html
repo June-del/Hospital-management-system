@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h5>Patient: {{ patient.full_name }} (ID: {{ patient.patient_id }})</h5>
+                {% if current_admission %}
+                <p><strong>Current Bed:</strong> {{ current_admission.bed.room.ward.name }} - Room {{ current_admission.bed.room.room_number }} - Bed {{ current_admission.bed.bed_number }}</p>
+                {% else %}
+                <p><strong>Current Status:</strong> Not currently admitted.</p>
+                {% endif %}
+            </div>
+
+            <form method="POST" action="{{ url_for('nurse_portal.bed_assignment', patient_id=patient.id) }}">
+                <div class="form-group">
+                    <label for="new_bed_id">Select New Available Bed</label>
+                    <select class="form-control" id="new_bed_id" name="new_bed_id" required>
+                        <option value="">Choose a new bed...</option>
+                        {% for bed in available_beds %}
+                        <option value="{{ bed.id }}">
+                            {{ bed.room.ward.name }} - Room {{ bed.room.room_number }} - Bed {{ bed.bed_number }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">
+                    {% if current_admission %}
+                        Confirm Transfer
+                    {% else %}
+                        Assign Bed
+                    {% endif %}
+                </button>
+                <a href="{{ url_for('nurse_portal.view_patient_details', patient_id=patient.id) }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

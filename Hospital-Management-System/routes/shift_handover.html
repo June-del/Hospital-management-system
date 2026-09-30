@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <p>This page will allow nurses to manage shift handovers.</p>
+            <p>Features to be implemented:</p>
+            <ul>
+                <li>List patients to be handed over</li>
+                <li>Summarize patient status and critical information</li>
+                <li>Select incoming nurse</li>
+                <li>Confirm handover</li>
+            </ul>
+            <a href="{{ url_for('nurse_portal.dashboard') }}" class="btn btn-primary mt-3">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

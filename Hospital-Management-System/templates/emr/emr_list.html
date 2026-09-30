@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Electronic Medical Records</h2>
+                <p class="text-muted mb-0">Search and review patient encounters and clinical histories.</p>
+            </div>
+            <a href="{{ url_for('emr.create_emr') }}" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Create Record</a>
+        </div>
+
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="search" value="{{ search }}" placeholder="Search by patient, doctor or diagnosis">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="doctor">
+                    <option value="">All Doctors</option>
+                    {% for doctor in doctors %}
+                    <option value="{{ doctor.id }}" {% if doctor_id == doctor.id|string %}selected{% endif %}>{{ doctor.first_name }} {{ doctor.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="patient">
+                    <option value="">All Patients</option>
+                    {% for patient in patients %}
+                    <option value="{{ patient.id }}" {% if patient_id == patient.id|string %}selected{% endif %}>{{ patient.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-primary w-100" type="submit"><i class="fas fa-filter"></i></button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Visit Date</th>
+                        <th>Chief Complaint</th>
+                        <th>Diagnosis</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td>{{ record.patient.full_name }}</td>
+                        <td>{{ record.doctor.first_name }} {{ record.doctor.last_name }}</td>
+                        <td>{{ record.visit_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ record.chief_complaint }}</td>
+                        <td>{{ record.diagnosis or 'Pending' }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('emr.view_emr', record_id=record.id) }}" class="btn btn-outline-info"><i class="fas fa-eye"></i></a>
+                                <a href="{{ url_for('emr.edit_emr', record_id=record.id) }}" class="btn btn-outline-warning"><i class="fas fa-edit"></i></a>
+                                <a href="{{ url_for('emr.print_emr', record_id=record.id) }}" class="btn btn-outline-secondary" target="_blank"><i class="fas fa-print"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">No medical records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pagination and pagination.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                    <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('emr.emr_index', page=page_num, search=search, doctor=doctor_id, patient=patient_id) }}">{{ page_num }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

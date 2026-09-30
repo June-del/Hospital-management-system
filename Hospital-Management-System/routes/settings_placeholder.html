@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <p>This page is a placeholder for security settings.</p>
+            <p>Settings to be implemented:</p>
+            <ul>
+                <li>Password Expiration Policy</li>
+                <li>Account Lockout Threshold</li>
+                <li>Session Timeout Configuration</li>
+                <li>Two-Factor Authentication (2FA) setup</li>
+            </ul>
+            <a href="{{ url_for('security_audit.dashboard') }}" class="btn btn-primary mt-3">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

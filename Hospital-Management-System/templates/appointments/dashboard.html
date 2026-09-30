@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <h2 class="fw-bold mb-4">Appointment Dashboard</h2>
+        <div class="row g-4 mb-4">
+            {% for key, label, badge in [('today','Today', 'primary'), ('pending','Pending', 'warning'), ('completed','Completed', 'success'), ('cancelled','Cancelled', 'danger'), ('upcoming','Upcoming', 'info')] %}
+            <div class="col-md-2">
+                <div class="border rounded-4 p-3 h-100">
+                    <div class="text-muted small text-uppercase">{{ label }}</div>
+                    <div class="display-6 fw-bold">{{ summary[key] }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <h5 class="fw-semibold mb-3">Today Appointments</h5>
+                <ul class="list-group">
+                    {% for appointment in today_appointments %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ appointment.patient.full_name }} - {{ appointment.doctor.first_name }} {{ appointment.doctor.last_name }}</span>
+                        <span class="badge bg-primary">{{ appointment.appointment_time }}</span>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-muted">No appointments today.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h5 class="fw-semibold mb-3">Upcoming Appointments</h5>
+                <ul class="list-group">
+                    {% for appointment in upcoming_appointments %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ appointment.appointment_date.strftime('%Y-%m-%d') }} - {{ appointment.patient.full_name }}</span>
+                        <span class="badge bg-info text-dark">{{ appointment.appointment_time }}</span>
+                    </li>
+                    {% else %}
+                    <li class="list-group-item text-muted">No upcoming appointments.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

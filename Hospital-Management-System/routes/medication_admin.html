@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('nurse_portal.administer_medication', patient_id=patient.id) }}">
+                <div class="form-group">
+                    <label for="medication_name">Medication Name</label>
+                    <input type="text" class="form-control" id="medication_name" name="medication_name" required placeholder="e.g., Paracetamol">
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="dosage">Dosage</label>
+                            <input type="text" class="form-control" id="dosage" name="dosage" required placeholder="e.g., 500mg, 1 tablet">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="route">Route</label>
+                            <select class="form-control" id="route" name="route" required>
+                                <option value="">Select Route...</option>
+                                <option value="Oral">Oral</option>
+                                <option value="IV">Intravenous (IV)</option>
+                                <option value="IM">Intramuscular (IM)</option>
+                                <option value="SubQ">Subcutaneous (SubQ)</option>
+                                <option value="Topical">Topical</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="administration_datetime">Administration Date/Time</label>
+                    <input type="datetime-local" class="form-control" id="administration_datetime" name="administration_datetime" value="{{ now().strftime('%Y-%m-%dT%H:%M') }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Any specific observations or patient reactions..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Record Administration</button>
+                <a href="{{ url_for('nurse_portal.view_patient_details', patient_id=patient.id) }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

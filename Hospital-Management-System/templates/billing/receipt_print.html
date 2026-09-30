@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+        <h2 class="fw-bold mb-3">Receipt</h2>
+        <p><strong>Payment ID:</strong> {{ payment.id }}</p>
+        <p><strong>Invoice:</strong> {{ payment.invoice.id }}</p>
+        <p><strong>Amount:</strong> {{ payment.amount_paid }}</p>
+        <p><strong>Method:</strong> {{ payment.payment_method }}</p>
+        <p><strong>Date:</strong> {{ payment.payment_date.strftime('%Y-%m-%d') }}</p>
+    </div>
+</div>
+{% endblock %}

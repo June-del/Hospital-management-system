@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h5>Emergency Call Details</h5>
+                <p><strong>Caller:</strong> {{ call.caller_name }} ({{ call.phone }})</p>
+                <p><strong>Location:</strong> {{ call.location }}</p>
+                <p><strong>Type:</strong> {{ call.emergency_type }}</p>
+                <p><strong>Priority:</strong> <span class="badge badge-danger">{{ call.priority }}</span></p>
+            </div>
+
+            <form method="POST" action="{{ url_for('emergency.dispatch_ambulance', call_id=call.id) }}">
+                <div class="form-group">
+                    <label for="ambulance_id">Select Available Ambulance</label>
+                    <select class="form-control" id="ambulance_id" name="ambulance_id" required>
+                        <option value="">Choose an ambulance...</option>
+                        {% for ambulance in ambulances %}
+                        <option value="{{ ambulance.id }}">
+                            {{ ambulance.vehicle_number }} (Driver: {{ ambulance.driver.first_name if ambulance.driver else 'N/A' }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% if not ambulances %}
+                    <small class="form-text text-danger">No ambulances are currently available.</small>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-success mt-3" {% if not ambulances %}disabled{% endif %}>
+                    <i class="fas fa-shipping-fast"></i> Dispatch Now
+                </button>
+                <a href="{{ url_for('emergency.list_emergency_calls') }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

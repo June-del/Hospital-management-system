@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h5>Purchase Order: {{ po.po_number }}</h5>
+                <p><strong>Supplier:</strong> {{ po.supplier.company_name }}</p>
+                <p><strong>Order Date:</strong> {{ po.order_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p><strong>Expected Delivery:</strong> {{ po.expected_delivery_date.strftime('%Y-%m-%d') if po.expected_delivery_date else 'N/A' }}</p>
+                <p><strong>Status:</strong> <span class="badge badge-info">{{ po.status }}</span></p>
+            </div>
+
+            <form method="POST" action="{{ url_for('procurement.receive_goods', po_id=po.id) }}">
+                <div class="form-group">
+                    <label for="delivery_date">Delivery Date</label>
+                    <input type="datetime-local" class="form-control" id="delivery_date" name="delivery_date" value="{{ now().strftime('%Y-%m-%dT%H:%M') }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="remarks">Remarks</label>
+                    <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
+                </div>
+
+                <hr>
+                <h5>Items to Receive</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Ordered Qty</th>
+                                <th>Received So Far</th>
+                                <th>Remaining</th>
+                                <th>Quantity to Receive</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in po.items %}
+                            <tr>
+                                <td>{{ item.product.name }} ({{ item.product.unit_of_measure }})</td>
+                                <td>{{ item.quantity_ordered }}</td>
+                                <td>{{ item.quantity_received }}</td>
+                                <td>{{ item.quantity_ordered - item.quantity_received }}</td>
+                                <td>
+                                    <input type="number" class="form-control" name="received_qty_{{ item.id }}" 
+                                           value="0" min="0" max="{{ item.quantity_ordered - item.quantity_received }}">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Confirm Goods Received</button>
+                <a href="{{ url_for('procurement.list_purchase_orders') }}" class="btn btn-secondary mt-3">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Optional: Add client-side validation or dynamic updates if needed
+    // For example, if a user tries to enter more than remaining quantity
+</script>
+{% endblock %}

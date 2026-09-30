@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">{{ title }}</h6>
+            <div>
+                <a href="{{ url_for('nurse_portal.record_vitals', patient_id=patient.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-heartbeat fa-sm text-white-50"></i> Record Vitals</a>
+                <a href="{{ url_for('nurse_portal.administer_medication', patient_id=patient.id) }}" class="btn btn-warning btn-sm"><i class="fas fa-pills fa-sm text-white-50"></i> Administer Meds</a>
+                <a href="{{ url_for('nurse_portal.add_nursing_note', patient_id=patient.id) }}" class="btn btn-info btn-sm"><i class="fas fa-notes-medical fa-sm text-white-50"></i> Add Note</a>
+                <a href="{{ url_for('nurse_portal.bed_assignment', patient_id=patient.id) }}" class="btn btn-secondary btn-sm"><i class="fas fa-bed fa-sm text-white-50"></i> Assign Bed</a>
+                <a href="{{ url_for('nurse_portal.patient_transfer_out', patient_id=patient.id) }}" class="btn btn-danger btn-sm"><i class="fas fa-exchange-alt fa-sm text-white-50"></i> Transfer/Discharge</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Patient Information</h5>
+                    <hr>
+                    <p><strong>Name:</strong> {{ patient.full_name }}</p>
+                    <p><strong>Patient ID:</strong> {{ patient.patient_id }}</p>
+                    <p><strong>DOB:</strong> {{ patient.date_of_birth.strftime('%d %b %Y') }}</p>
+                    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+                    <p><strong>Blood Group:</strong> {{ patient.blood_group }}</p>
+                    <p><strong>Phone:</strong> {{ patient.phone }}</p>
+                    <p><strong>Email:</strong> {{ patient.email }}</p>
+                    <p><strong>Current Ward:</strong> {{ patient.admissions|selectattr('discharge_date', 'none')|first.bed.room.ward.name if patient.admissions|selectattr('discharge_date', 'none')|first else 'N/A' }}</p>
+                    <p><strong>Current Bed:</strong> {{ patient.admissions|selectattr('discharge_date', 'none')|first.bed.bed_number if patient.admissions|selectattr('discharge_date', 'none')|first else 'N/A' }}</p>
+                </div>
+                <div class="col-md-8">
+                    <h5>Recent Vital Signs</h5>
+                    <hr>
+                    {% if recent_vitals %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Temp (°C)</th>
+                                        <th>Pulse (BPM)</th>
+                                        <th>BP (mmHg)</th>
+                                        <th>RR (BPM)</th>
+                                        <th>SpO2 (%)</th>
+                                        <th>Nurse</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for vital in recent_vitals %}
+                                    <tr>
+                                        <td>{{ vital.timestamp.strftime('%H:%M') }}</td>
+                                        <td>{{ vital.temperature or 'N/A' }}</td>
+                                        <td>{{ vital.pulse_rate or 'N/A' }}</td>
+                                        <td>{{ vital.blood_pressure_systolic or 'N/A' }}/{{ vital.blood_pressure_diastolic or 'N/A' }}</td>
+                                        <td>{{ vital.respiratory_rate or 'N/A' }}</td>
+                                        <td>{{ vital.oxygen_saturation or 'N/A' }}</td>
+                                        <td>{{ vital.nurse.first_name }} {{ vital.nurse.last_name }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p>No recent vital signs recorded.</p>
+                    {% endif %}
+
+                    <h5 class="mt-4">Recent Medication Administrations</h5>
+                    <hr>
+                    {% if recent_meds %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Medication</th>
+                                        <th>Dosage</th>
+                                        <th>Route</th>
+                                        <th>Nurse</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for med in recent_meds %}
+                                    <tr>
+                                        <td>{{ med.administration_datetime.strftime('%H:%M') }}</td>
+                                        <td>{{ med.medication_name }}</td>
+                                        <td>{{ med.dosage }}</td>
+                                        <td>{{ med.route }}</td>
+                                        <td>{{ med.nurse.first_name }} {{ med.nurse.last_name }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p>No recent medication administrations recorded.</p>
+                    {% endif %}
+
+                    <h5 class="mt-4">Recent Nursing Notes</h5>
+                    <hr>
+                    {% if recent_notes %}
+                        <div class="list-group">
+                            {% for note in recent_notes %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Note by {{ note.nurse.first_name }} {{ note.nurse.last_name }}</h6>
+                                    <small>{{ note.timestamp.strftime('%d %b %Y %H:%M') }}</small>
+                                </div>
+                                <p class="mb-1">{{ note.note_text }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No recent nursing notes recorded.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
